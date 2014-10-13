@@ -239,35 +239,29 @@ void drawAlienBlock(int startRow, int startCol) {
 	}
 }
 
-int detectHit(int x1, int x2, int y) {
+int getAlien(int x, int y) {
+	return (y % 24 * 11) + x % 32;
+}
+
+int detectAlienHit(int state, int x1, int x2, int y) {
 	x1 = x1 - alienPosX;
 	x2 = x2 - alienPosX;
 	y = y - alienPosY;
-	if(x1 < 0)
-		x1 = 0;
-	if(x2 < 0)
-		x2 = 0;
-	if(y < 0)
-		y = 0;
+	if(x2 < 0)		//bullet left of alien block
+		return 0;
+//	if(x2 < 0)
+//		return 0;
+	if(y < 0)		//bullet above alien block, wont hit it
+		return 0;
+//	if(x1 > ALIEN_BLOCK_WIDTH)
+//		return 0;
+	if(x1 > ALIEN_BLOCK_WIDTH)	//bullet right of alien block
+		return 0;
 
-	int curRow, curCol;
-	int curAlienX1, curAlienX2, curAlienY;
-
-//	int bound1 = alienPosY + ALIEN_BLOCK_HEIGHT;
-//
-//	int bound2 = alienPosX + ALIEN_BLOCK_WIDTH + 8;
-//
-//	int bound3 = alienPosX + ALIEN_BLOCK_WIDTH - 1;
-
-	for(curRow = 0; curRow < 5; curRow++) {
-		for(curCol = 0; curCol < 11; curCol++) {
-
-//			curAlienX1 = alienPosX + ((ALIEN_BLOCK_WIDTH) * curCol);
-//			curAlienX1 = alienPosX + ((ALIEN_BLOCK_WIDTH) * curCol) + ;
-
-
-		}
+	if(getPixel(state, x1, y)) {
+		return getAlien(x1, y);
+	} else if(getPixel(state, x2, y)) {
+		return getAlien(x2, y);
 	}
-
 	return -1;
 }
