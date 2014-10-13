@@ -6,6 +6,7 @@
 #include "aliens.h"
 #include "tank.h"
 #include "bunkers.h"
+#include "boss.h"
 
 //static const short ALIEN_BLOCK_HEIGHT = 120;	//total alien height
 //static const short ALIEN_BLOCK_WIDTH = 352;		//total un-altered alien width
@@ -24,6 +25,7 @@ void render() {
 	drawAlienMissiles();
 	if(moved) {
 		drawAlienBlock(alienPosY, alienPosX);
+		drawBoss();
 		moved = 0;
 	}
 	initializeBunkers();
@@ -34,11 +36,16 @@ void lab3run(unsigned int * fb) {
 	framebuffer = fb;
 //	initializeBunkers();
 //	moveAliens();
+	initializeBoss();
 	render();
 
 	while(1) {
 		Xuint8 s = XUartLite_RecvByte(XPAR_RS232_UART_1_BASEADDR);
 		switch(s) {
+			case 0x31:
+				moveBoss();
+				moved = 1;
+				break;
 			case 0x32:	//2 -- kill random alien
 				xil_printf("Which would you like to kill? (2 digit value please)\r\n");
 				Xuint8 a = XUartLite_RecvByte(XPAR_RS232_UART_1_BASEADDR);
