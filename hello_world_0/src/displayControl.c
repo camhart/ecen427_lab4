@@ -15,7 +15,7 @@ unsigned int * framebuffer;
 
 int state = 0;	//state of bullets
 
-int moved = 1;	//track movement
+int alienBlockMoved = 1;	//track movement
 
 void render() {
 	//draw everything!
@@ -23,13 +23,17 @@ void render() {
 	drawTankMissile();
 	drawAlienMissiles();
 	drawAlienMissiles();
-	if(moved) {
+	if(alienBlockMoved) {
 		drawAlienBlock(alienPosY, alienPosX);
-		drawBoss();
-		moved = 0;
+		alienBlockMoved = 0;
 	}
+	drawBoss();
 	initializeBunkers();
 	drawTank();
+}
+
+void lab4run(unsigned int * fb) {
+
 }
 
 void lab3run(unsigned int * fb) {
@@ -51,7 +55,7 @@ void lab3run(unsigned int * fb) {
 				Xuint8 a = XUartLite_RecvByte(XPAR_RS232_UART_1_BASEADDR);
 				Xuint8 b = XUartLite_RecvByte(XPAR_RS232_UART_1_BASEADDR);
 				alive[(a-0x30)*10+(b-0x30)] = 0;
-				moved = 1;
+				alienBlockMoved = 1;
 				break;
 			case 0x33:	//3 - alien shoot!
 				fireAlienMissile();
@@ -76,7 +80,7 @@ void lab3run(unsigned int * fb) {
 				break;
 			case 0x38:	//8 - move aliens!
 				moveAliens();
-				moved = 1;
+				alienBlockMoved = 1;
 				break;
 			case 0x39:	//update all the bullets!
 				updateAlienMissiles(1);

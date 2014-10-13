@@ -9,8 +9,8 @@ void render();
 
 void lab3run(unsigned int *);
 
-int getPixel(int, int, int);
+void lab4run(unsigned int *);
 
-char isAlienAlive(int , int );
+extern int alienBlockMoved;
 
 #endif /* DISPLAYCONTROL_H_ */
