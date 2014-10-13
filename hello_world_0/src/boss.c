@@ -8,16 +8,26 @@ int bossPosX = 2; //boss starting point
 int bossTopRow = 20;	//boss top Y position
 int bossBottomRow = 34;	//boss bottom Y position
 static int bossDir = 1;	 //right (direction boss is moving)
+static int bossExists = 0;
 
 //int bitmap of ship
 int boss[BOSS_HEIGHT] = {4193280, 4193280, 67108800, 67108800, 268435440, 268435440, 1022611260, 1022611260, 4294967295L, 4294967295L, 264487920, 264487920, 50331840, 50331840};
 
 void moveBoss(){
 	bossPosX += bossDir;
+	if(bossPosX > 598){
+		bossExists = 0;
+		eraseBoss();
+	}
+	else if(bossPosX < 2){
+		bossExists = 0;
+		eraseBoss();
+	}
 	drawBoss();
 }
 
 void initializeBoss(){
+	bossExists = 1;
 	if(rand()%2){
 		bossDir = 1;	//boss goes right
 		bossPosX = 2;	//starting left
@@ -26,7 +36,6 @@ void initializeBoss(){
 		bossDir = -1;		//boss goes left
 		bossPosX = 640-42;	//starting right
 	}
-	drawBoss();
 }
 
 //returns the color that belongs in the given location
@@ -38,6 +47,9 @@ inline int getBossPixel(int row, int col){
 }
 
 void drawBoss(){
+	if(!bossExists){
+		return 0;
+	}
 	int curRow, curCol;
 	int endPaintColumn = bossPosX+34;	//when to stop painting completely
 	int endBossColumn = endPaintColumn - 2;	//when the start erasing
@@ -59,8 +71,23 @@ void drawBoss(){
 	}
 }
 
+
 //void killBoss(){
 //	int bonus = ((rand()%6)+1)*50;
 //	addScore(bonus);
 //	drawNumbers(bonus, bossPosX, bossTopRow);
 //}
+
+void eraseBoss(){
+	int curRow, curCol;
+	int endPaintColumn = bossPosX+34;	//when to stop painting
+	for(curRow = bossTopRow; curRow < bossBottomRow; curRow++) {	//step through row
+		int fb_row = curRow*640;	//get position in framebuffer
+		for(curCol = bossPosX - 2; curCol < endPaintColumn; curCol++) {
+			framebuffer[fb_row + curCol] = 0;
+			framebuffer[fb_row + (++curCol)] = 0;
+		}
+	}
+}
+
+
