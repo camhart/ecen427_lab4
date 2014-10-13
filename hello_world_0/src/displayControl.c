@@ -44,7 +44,7 @@ void lab3run(unsigned int * fb) {
 		switch(s) {
 			case 0x31:
 				moveBoss();
-				moved = 1;
+//				moved = 1;
 				break;
 			case 0x32:	//2 -- kill random alien
 				xil_printf("Which would you like to kill? (2 digit value please)\r\n");

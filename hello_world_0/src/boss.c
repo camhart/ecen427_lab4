@@ -6,7 +6,7 @@
 
 int bossPosX = 2; //boss starting point
 int bossTopRow = 20;	//boss top Y position
-int bossBottomRow = 36;	//boss bottom Y position
+int bossBottomRow = 34;	//boss bottom Y position
 static int bossDir = 1;	 //right (direction boss is moving)
 
 //int bitmap of ship
@@ -24,15 +24,15 @@ void initializeBoss(){
 	}
 	else{
 		bossDir = -1;		//boss goes left
-		bossPosX = 640-34;	//starting right
+		bossPosX = 640-42;	//starting right
 	}
 	drawBoss();
 }
 
 //returns the color that belongs in the given location
-inline int getBossPixel(int x, int y){
+inline int getBossPixel(int row, int col){
 	//access integer array for each pixel
-	if((boss[y] & (1<<(31-x))))	//shift on integer to get individual bit
+	if((boss[row] & (1<<(31-col))))	//shift on integer to get individual bit
 		return 0xFF0000;
 	return 0;
 }
@@ -47,7 +47,7 @@ void drawBoss(){
 		for(curCol = bossPosX - 2; curCol < endPaintColumn; curCol++) {
 			if(curCol < bossPosX) {	//erase left
 				framebuffer[fb_row + curCol] = 0;
-			} else if(curCol > endBossColumn) {	//erase right
+			} else if(curCol >= endBossColumn) {	//erase right
 				framebuffer[fb_row + curCol] = 0;
 			}
 			else {	//get the specific pixel value for the boss block and assign framebuffer

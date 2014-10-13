@@ -240,6 +240,16 @@ void drawAlienBlock(int startRow, int startCol) {
 }
 
 int detectHit(int x1, int x2, int y) {
+	x1 = x1 - alienPosX;
+	x2 = x2 - alienPosX;
+	y = y - alienPosY;
+	if(x1 < 0)
+		x1 = 0;
+	if(x2 < 0)
+		x2 = 0;
+	if(y < 0)
+		y = 0;
+
 	int curRow, curCol;
 	int curAlienX1, curAlienX2, curAlienY;
 
@@ -253,7 +263,8 @@ int detectHit(int x1, int x2, int y) {
 		for(curCol = 0; curCol < 11; curCol++) {
 
 //			curAlienX1 = alienPosX + ((ALIEN_BLOCK_WIDTH) * curCol);
-			curAlienX1 = alienPosX;
+//			curAlienX1 = alienPosX + ((ALIEN_BLOCK_WIDTH) * curCol) + ;
+
 
 		}
 	}
