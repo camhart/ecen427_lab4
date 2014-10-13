@@ -58,3 +58,9 @@ void drawBoss(){
 		}
 	}
 }
+
+void killBoss(){
+	int bonus = ((rand()%6)+1)*50;
+	addScore(bonus);
+	drawNumbers(bonus, bossPosX, bossTopRow);
+}
