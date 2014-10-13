@@ -1,25 +1,3 @@
-/*
- * Copyright (c) 2009 Xilinx, Inc.  All rights reserved.
- *
- * Xilinx, Inc.
- * XILINX IS PROVIDING THIS DESIGN, CODE, OR INFORMATION "AS IS" AS A
- * COURTESY TO YOU.  BY PROVIDING THIS DESIGN, CODE, OR INFORMATION AS
- * ONE POSSIBLE   IMPLEMENTATION OF THIS FEATURE, APPLICATION OR
- * STANDARD, XILINX IS MAKING NO REPRESENTATION THAT THIS IMPLEMENTATION
- * IS FREE FROM ANY CLAIMS OF INFRINGEMENT, AND YOU ARE RESPONSIBLE
- * FOR OBTAINING ANY RIGHTS YOU MAY REQUIRE FOR YOUR IMPLEMENTATION.
- * XILINX EXPRESSLY DISCLAIMS ANY WARRANTY WHATSOEVER WITH RESPECT TO
- * THE ADEQUACY OF THE IMPLEMENTATION, INCLUDING BUT NOT LIMITED TO
- * ANY WARRANTIES OR REPRESENTATIONS THAT THIS IMPLEMENTATION IS FREE
- * FROM CLAIMS OF INFRINGEMENT, IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- */
-
-/*
- * helloworld.c: simple test application
- */
-
 #include <stdio.h>
 #include "xgpio.h"          // Provides access to PB GPIO driver.
 #include "mb_interface.h"   // provides the microblaze interrupt enables, etc.
@@ -32,12 +10,11 @@
 #include "unistd.h"
 #include "displayControl.h"
 #include "stateControl.h"
-
-#define DEBUG
-void print(char *str);
+//
+//#define DEBUG
+//void print(char *str);
 
 #define FRAME_BUFFER_0_ADDR 0xC1000000  // Starting location in DDR where we will store the images that we display.
-#define MAX_SILLY_TIMER 10000000;
 
 XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
@@ -48,8 +25,7 @@ int counter = 0;
 void timer_interrupt_handler() {
 	counter++;
 	makeChange(counter);
-	if(counter%10 == 0)
-		xil_printf(".");
+	xil_printf(".");
 }
 
 int currentButtonState;
@@ -60,9 +36,12 @@ void pb_interrupt_handler() {
   XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
   currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
   // You need to do something here.
+
+  xil_printf("p");
+
+
   XGpio_InterruptClear(&gpPB, 0xFFFFFFFF);            // Ack the PB interrupt.
   XGpio_InterruptGlobalEnable(&gpPB);                 // Re-enable PB interrupts.
-  xil_printf("p");
 }
 
 // Main interrupt handler, queries the interrupt controller to see what peripheral
@@ -81,27 +60,11 @@ void interrupt_handler_dispatcher(void* ptr) {
 		XIntc_AckIntr(XPAR_INTC_0_BASEADDR, XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK);
 		pb_interrupt_handler();
 	}
-	xil_printf("a");
 }
 
 int main()
 {
 	init_platform();                   // Necessary for all programs.
-
-    // Initialize the GPIO peripherals.
-    int success;
-    success = XGpio_Initialize(&gpPB, XPAR_PUSH_BUTTONS_5BITS_DEVICE_ID);
-    // Set the push button peripheral to be inputs.
-    XGpio_SetDataDirection(&gpPB, 1, 0x0000001F);
-    // Enable the global GPIO interrupt for push buttons.
-    XGpio_InterruptGlobalEnable(&gpPB);
-    // Enable all interrupts in the push button peripheral.
-    XGpio_InterruptEnable(&gpPB, 0xFFFFFFFF);
-
-    microblaze_register_handler(interrupt_handler_dispatcher, NULL);
-    XIntc_EnableIntr(XPAR_INTC_0_BASEADDR,
-    		(XPAR_FIT_TIMER_0_INTERRUPT_MASK | XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK));
-    XIntc_MasterEnable(XPAR_INTC_0_BASEADDR);
 
 	int Status;                        // Keep track of success/failure of system function calls.
 	XAxiVdma videoDMAController;
@@ -163,7 +126,6 @@ int main()
      // The variables framePointer and framePointer1 are just pointers to the base address
      // of frame 0 and frame 1.
      unsigned int * framePointer0 = (unsigned int *) FRAME_BUFFER_0_ADDR;
-     unsigned int * framePointer1 = ((unsigned int *) FRAME_BUFFER_0_ADDR) + 640*480;
 
      int row=0, col=0;
 	 for( row=0; row<480; row++) {
@@ -186,11 +148,28 @@ int main()
     	 xil_printf("vdma parking failed\n\r");
      }
 
+     // Initialize the GPIO peripherals.
+     int success;
+     success = XGpio_Initialize(&gpPB, XPAR_PUSH_BUTTONS_5BITS_DEVICE_ID);
+     // Set the push button peripheral to be inputs.
+     XGpio_SetDataDirection(&gpPB, 1, 0x0000001F);
+     // Enable the global GPIO interrupt for push buttons.
+     XGpio_InterruptGlobalEnable(&gpPB);
+     // Enable all interrupts in the push button peripheral.
+     XGpio_InterruptEnable(&gpPB, 0xFFFFFFFF);
+
+     microblaze_register_handler(interrupt_handler_dispatcher, NULL);
+     XIntc_EnableIntr(XPAR_INTC_0_BASEADDR,
+     		(XPAR_FIT_TIMER_0_INTERRUPT_MASK | XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK));
+     XIntc_MasterEnable(XPAR_INTC_0_BASEADDR);
      microblaze_enable_interrupts();
 
-     while (1) {
+     lab4init(framePointer0);
+//     render();
+     while (1);
+//     {
 //    	 lab3run(framePointer0);
-     }
+//     }
      cleanup_platform();
 
     return 0;

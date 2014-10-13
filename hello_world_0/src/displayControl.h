@@ -9,7 +9,7 @@ void render();
 
 void lab3run(unsigned int *);
 
-void lab4run(unsigned int *);
+void lab4init(unsigned int *);
 
 extern int alienBlockMoved;
 
