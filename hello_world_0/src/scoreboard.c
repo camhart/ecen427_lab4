@@ -34,6 +34,8 @@ int seven[TEXT_HEIGHT] = {1023, 1023, 3, 3, 3, 3, 12, 12, 12, 12};
 int eight[TEXT_HEIGHT] = {252, 252, 771, 771, 252, 252, 771, 771, 252, 252};
 int nine[TEXT_HEIGHT] = {252, 252, 771, 771, 255, 255, 3, 3, 252, 252};
 int zero[TEXT_HEIGHT] = {252, 252, 771, 771, 771, 771, 771, 771, 252, 252};
+static int isNotFirstDigit = 0;
+static int whichDigit = 0;
 
 //returns the color that belongs in the given location
 inline int getScore1Pixel(int row, int col){
@@ -140,18 +142,36 @@ void drawTankLives(int lives){
 	}
 }
 
-void paintScore(int score){
-	int digitCount = 1;
-	paintDigit(digitCount, score);
-	xil_printf("%d", score);
-	while(score = score/10){
-		xil_printf("%d", score);
-		digitCount++;
-		paintDigit(digitCount, score);
-		if(digitCount > 9){
-			paintScore(999999999);
+void resetFirstDigit(){
+	isNotFirstDigit = 0;
+}
+
+void paintScore(int score, int firstTime){
+	if(firstTime){
+		resetFirstDigit();	//we're starting a new score display
+	}
+	if(score/10 > 0){
+		paintScore(score/10, 0);	//
+	}
+	else{
+		if(isNotFirstDigit){
+			paintDigit(++whichDigit, score);
+		else{	//we've hit the lowest digit, so start counting up the digits now
+			whichDigit = 1;
+			paintDigit(whichDigit, score);
+			isNotFirstDigit = 1;
 		}
 	}
+	//paintDigit(digitCount, score);
+	//xil_printf("%d", score);
+	//while(score = score/10){
+//		xil_printf("%d", score);
+//		digitCount++;
+//		paintDigit(digitCount, score);
+//		if(digitCount > 9){
+//			paintScore(999999999);
+//		}
+//	}
 }
 
 void paintDigit(int position, int value){
@@ -206,7 +226,7 @@ void initializeScore(){
 	drawScore();
 	drawLives();
 	drawTankLives(3);
-	paintScore(1235679);
+	paintScore(1235679, 1);
 }
 
 
