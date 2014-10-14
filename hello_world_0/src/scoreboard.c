@@ -28,11 +28,6 @@ int eight[TEXT_HEIGHT] = {252, 252, 771, 771, 252, 252, 771, 771, 252, 252};
 int nine[TEXT_HEIGHT] = {252, 252, 771, 771, 255, 255, 3, 3, 252, 252};
 int zero[TEXT_HEIGHT] = {252, 252, 771, 771, 771, 771, 771, 771, 252, 252};
 
-void initializeScore(){
-	paintScoreText();
-	paintScore(0);
-}
-
 //returns the color that belongs in the given location
 inline int getScore1Pixel(int row, int col){
 	//access integer array for each pixel
@@ -109,23 +104,19 @@ inline int get0Pixel(int row, int col){
 	return 0;
 }
 
-void drawBoss(){
+void drawScore(){
 	int curRow, curCol;
-	//score part 1 paint
 	for(curRow = TOP_ROW; curRow < BOTTOM_ROW; curRow++) {	//step through row
 		int fb_row = curRow*640;	//get position in framebuffer
-		int rowDiff = curRow - BOTTOM_ROW;
+		int rowDiff = curRow - TOP_ROW;
+		//score part 1 paint
 		for(curCol = SCORE_START_POSITION_X1; curCol < SCORE_STOP_POSITION_X1; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
 			int now = getScore1Pixel(rowDiff, curCol - SCORE_START_POSITION_X1);
 			framebuffer[fb_row + curCol] = now;
 			framebuffer[fb_row + (++curCol)] = now;
 		}
-	}
-	//score part 2 paint
-	for(curRow = TOP_ROW; curRow < BOTTOM_ROW; curRow++) {	//step through row
-		int fb_row = curRow*640;	//get position in framebuffer
-		int rowDiff = curRow - BOTTOM_ROW;
+		//score part 2 paint
 		for(curCol = SCORE_START_POSITION_X2; curCol < SCORE_STOP_POSITION_X2; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
 			int now = getScore2Pixel(rowDiff, curCol - SCORE_START_POSITION_X2);
@@ -178,7 +169,7 @@ void drawDigit(int num[TEXT_HEIGHT], int pos){
 	int startCol = (pos-1)*NUMBER_WIDTH + NUMBER_START_POS_X;
 	for(curRow = TOP_ROW; curRow < BOTTOM_ROW; curRow++) {	//step through row
 		int fb_row = curRow*640;	//get position in framebuffer
-		int rowDiff = curRow - BOTTOM_ROW;
+		int rowDiff = curRow - TOP_ROW;
 		for(curCol = startCol; curCol < stopCol; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
 			int now = (num[rowDiff] & (1<<(12-curCol-startCol)));	//shift on integer to get individual bit
@@ -193,4 +184,10 @@ void drawDigit(int num[TEXT_HEIGHT], int pos){
 		}
 	}
 }
+
+void initializeScore(){
+	drawScore();
+	paintScore(0);
+}
+
 
