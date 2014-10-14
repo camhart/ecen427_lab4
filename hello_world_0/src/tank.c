@@ -22,21 +22,21 @@ void fireTankMissile(){
 //clean up to avoid bugs when writing values outside of the framebuffer
 void eraseTankMissile(){
 	int cy, cx;
-
 	for(cy = tankMissileY-10; cy < tankMissileY + 12; cy++) {
 		for(cx = tankMissileX; cx < tankMissileX + 2; cx++) {
-			if(cy > tankMissileY && tankMissileY >= 0 && tankMissileY <= 639) {
-				framebuffer[cy * 640 + cx] = 0;
-			}
+//			if(cy > tankMissileY && tankMissileY >= 0 && tankMissileY <= 639) {
+				if(framebuffer[cy * 640 + cx] == 0xFFFFFF)
+					framebuffer[cy * 640 + cx] = 0;
+//			}
 		}
 	}
 }
 
 void updateTankMissile(int changePosition){
 	if(changePosition && tankMissile) {
-		tankMissileY -= 5;
+		tankMissileY -= 8;
 	}
-	if(tankMissileY < 0){	//if we've hit the end of the screen, remove missile entirely
+	if(tankMissileY < 30){	//if we've hit the end of the screen, remove missile entirely
 		eraseTankMissile();
 		tankMissile = 0;
 		tankMissileY = 438;
