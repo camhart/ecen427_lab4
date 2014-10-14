@@ -8,6 +8,8 @@
 #define SCORE_STOP_POSITION_X1 52
 #define SCORE_START_POSITION_X2 53
 #define SCORE_STOP_POSITION_X2 81
+#define NUMBER_START_POS_X 90
+#define NUMBER_WIDTH 12
 #define TOP_ROW 6
 #define BOTTOM_ROW 15
 #define TEXT_HEIGHT 10
@@ -15,6 +17,16 @@
 //int bitmap of score, level, and numbers
 int score_part1[TEXT_HEIGHT] = {133726087, 133726087, 402751512, 402751512, 132218904, 132218904, 1671192, 1671192, 534806407, 534806407};
 int score_part2[TEXT_HEIGHT] = {133726087, 133726087, 402751512, 402751512, 132218904, 132218904, 1671192, 1671192, 534806407, 534806407};
+int one[TEXT_HEIGHT] = {15, 15, 3, 3, 3, 3, 3, 3, 3, 3};
+int two[TEXT_HEIGHT] = {1020, 1020, 3, 3, 255, 255, 768, 768, 1023, 1023};
+int three[TEXT_HEIGHT] = {1020, 1020, 3, 3, 255, 255, 3, 3, 1020, 1020};
+int four[TEXT_HEIGHT] = {771, 771, 771, 771, 1023, 1023, 3, 3, 3, 3};
+int five[TEXT_HEIGHT] = {1023, 1023, 768, 768, 1020, 1020, 3, 3, 1020, 1020};
+int six[TEXT_HEIGHT] = {252, 252, 768, 768, 1020, 1020, 771, 771, 252, 252};
+int seven[TEXT_HEIGHT] = {1023, 1023, 3, 3, 3, 3, 12, 12, 12, 12};
+int eight[TEXT_HEIGHT] = {252, 252, 771, 771, 252, 252, 771, 771, 252, 252};
+int nine[TEXT_HEIGHT] = {252, 252, 771, 771, 255, 255, 3, 3, 252, 252};
+int zero[TEXT_HEIGHT] = {252, 252, 771, 771, 771, 771, 771, 771, 252, 252};
 
 void initializeScore(){
 	paintScoreText();
@@ -24,14 +36,75 @@ void initializeScore(){
 //returns the color that belongs in the given location
 inline int getScore1Pixel(int row, int col){
 	//access integer array for each pixel
-	if((score_part1[row] & (1<<(31-col))))	//shift on integer to get individual bit
+	if((score_part1[row] & (1<<(29-col))))	//shift on integer to get individual bit
 		return 0xFF0000;
 	return 0;
 }
 
 inline int getScore2Pixel(int row, int col){
 	//access integer array for each pixel
-	if((score_part2[row] & (1<<(31-col))))	//shift on integer to get individual bit
+	if((score_part2[row] & (1<<(29-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+
+inline int get1Pixel(int row, int col){
+	//access integer array for each pixel
+	if((one[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get2Pixel(int row, int col){
+	//access integer array for each pixel
+	if((two[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get3Pixel(int row, int col){
+	//access integer array for each pixel
+	if((three[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get4Pixel(int row, int col){
+	//access integer array for each pixel
+	if((four[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get5Pixel(int row, int col){
+	//access integer array for each pixel
+	if((five[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get6Pixel(int row, int col){
+	//access integer array for each pixel
+	if((six[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get7Pixel(int row, int col){
+	//access integer array for each pixel
+	if((seven[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get8Pixel(int row, int col){
+	//access integer array for each pixel
+	if((eight[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get9Pixel(int row, int col){
+	//access integer array for each pixel
+	if((nine[row] & (1<<(12-col))))	//shift on integer to get individual bit
+		return 0xFF0000;
+	return 0;
+}
+inline int get0Pixel(int row, int col){
+	//access integer array for each pixel
+	if((zero[row] & (1<<(12-col))))	//shift on integer to get individual bit
 		return 0xFF0000;
 	return 0;
 }
