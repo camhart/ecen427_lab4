@@ -29,11 +29,11 @@ void moveBoss(){
 void initializeBoss(){
 	bossExists = 1;
 	if(rand()%2){
-		bossDir = 1;	//boss goes right
+		bossDir = 2;	//boss goes right
 		bossPosX = 2;	//starting left
 	}
 	else{
-		bossDir = -1;		//boss goes left
+		bossDir = -2;		//boss goes left
 		bossPosX = 640-42;	//starting right
 	}
 }
