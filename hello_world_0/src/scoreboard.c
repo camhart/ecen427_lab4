@@ -217,7 +217,7 @@ void initializeScore(){
 	drawScore();
 	drawLives();
 	drawTankLives(3);
-	paintScore(1, 1);
+	paintScore(123456, 1);
 }
 
 

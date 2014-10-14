@@ -184,7 +184,8 @@ void drawAlienMissile(int mIndex, int state) {
 			if(cy < y) {
 				framebuffer[cy * 640 + cx] = 0;	//erase
 			} else {
-				framebuffer[cy * 640 + cx] = getMissilePixel(missiles[missileType[mIndex]][state], cx - x, cy - y);	//draw
+				if(framebuffer[cy * 640 + cx] != 0x00FF00)
+					framebuffer[cy * 640 + cx] = getMissilePixel(missiles[missileType[mIndex]][state], cx - x, cy - y);	//draw
 			}
 		}
 	}
@@ -308,6 +309,7 @@ void drawExplosion(int x, int y){
 	int cornerY = alienPosY + y*24;
 	int stopX = cornerX + 24;
 	int stopY = cornerY + 18;
+
 	int curRow, curCol, fb_row, rowDiff;
 	for(curRow = cornerY; curRow <= stopY; curRow++){
 		fb_row = curRow*640;
@@ -372,7 +374,7 @@ void eraseAlienMissile(int c) {
 	int x, y, a;
 	for(x = 0; x < 12; x++) {
 		for(y = 0; y < 10; y++) {
-			a = (missileY[c] + y) * 12 + missileX[c] + x;
+			a = (missileY[c] + y - 10) * 12 + missileX[c] + x;
 			if(framebuffer[a] == 0xFFFFFF) {
 				framebuffer[a] = 0x0;
 			}
