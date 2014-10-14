@@ -395,3 +395,18 @@ int detectAlienHit(int x1, int x2, int y) {
 	}
 	return 0;
 }
+
+void eraseAlienMissile(int c) {
+	missileType[c] = -1;
+	//12 pixels wide
+	//10 pixels tall
+	int x, y, a;
+	for(x = 0; x < 12; x++) {
+		for(y = 0; y < 10; y++) {
+			a = (missileY[c] + y) * 12 + missileX[c] + x;
+			if(framebuffer[a] == 0xFFFFFF) {
+				framebuffer[a] = 0x0;
+			}
+		}
+	}
+}

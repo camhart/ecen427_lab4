@@ -51,7 +51,10 @@ void makeChange(int counter) {
 		int c;
 		for(c = 0; c < 4; c++) {
 			if(missileType[c] != -1) {
-				detectBunkerHit(missileX, missileX + 5, missileY);
+				int hit = detectBunkerHit(missileX[c], missileX[c] + 5, missileY[c]);
+				if(hit) {
+					eraseAlienMissile(c);
+				}
 			}
 		}
 
