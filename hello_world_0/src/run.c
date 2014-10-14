@@ -10,6 +10,7 @@
 #include "unistd.h"
 #include "displayControl.h"
 #include "stateControl.h"
+#include "run.h"
 //
 //#define DEBUG
 //void print(char *str);

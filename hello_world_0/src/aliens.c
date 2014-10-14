@@ -244,7 +244,7 @@ int getAlien(int x, int y) {
 	return (y % 24 * 11) + x % 32;
 }
 
-int detectAlienHit(int state, int x1, int x2, int y) {
+int detectAlienHit(int x1, int x2, int y) {
 	x1 = x1 - alienPosX;
 	x2 = x2 - alienPosX;
 	y = y - alienPosY;
@@ -259,10 +259,14 @@ int detectAlienHit(int state, int x1, int x2, int y) {
 	if(x1 > ALIEN_BLOCK_WIDTH)	//bullet right of alien block
 		return 0;
 
-	if(getPixel(state, x1, y)) {
-		return getAlien(x1, y);
-	} else if(getPixel(state, x2, y)) {
-		return getAlien(x2, y);
+	if(getPixel(alienState, x1, y)) {
+		int alien = getAlien(x1, y);
+		alive[alien] = 0;
+		return alien;
+	} else if(getPixel(alienState, x2, y)) {
+		int alien = getAlien(x1, y);
+		alive[alien] = 0;
+		return alien;
 	}
 	return -1;
 }
