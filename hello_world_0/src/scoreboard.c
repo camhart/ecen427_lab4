@@ -148,14 +148,14 @@ void drawTankLives(int lives){
 void paintScore(int score, int digitCount){//, int firstTime){
 	if(score > 9){
 		paintDigit(digitCount, score % 10);
-		paintScore(score/10, ++digitCount);
+		xil_printf("score = %d, digit = %d",score%10, digitCount);
+		paintScore(score/10, digitCount + 1);
 	} else {
 		paintDigit(digitCount, score);
 	}
 }
 
 void paintDigit(int position, int value){
-	xil_printf("%d",value);
 	switch(value){
 	case(0):
 		drawDigit(zero, position);
