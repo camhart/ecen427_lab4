@@ -18,11 +18,11 @@ int alienPosY = 50;	//alien position global
 static int alienDir = 1;	 //right (direction alien is moving)
 
 //variables to trace missiles
-static int missileX[4] = {-1, -1, -1, -1};	//x location
-static int missileY[4] = {-1, -1, -1, -1};	//y location
-static char missileType[4] = {-1, -1, -1, -1};	//type
-static char missileNew[4] = {0, 0, 0, 0};	//is it new?
-static int missileIndex = 0;	//how many are out there?
+int missileX[4] = {-1, -1, -1, -1};	//x location
+int missileY[4] = {-1, -1, -1, -1};	//y location
+char missileType[4] = {-1, -1, -1, -1};	//type
+char missileNew[4] = {0, 0, 0, 0};	//is it new?
+int missileIndex = 0;	//how many are out there?
 
 //int bitmaps for each alien
 int topInAlien[ALIEN_HEIGHT] = {0x3C0000, 0x3C0000, 0xFF0000, 0xFF0000, 0x3FFC000, 0x3FFC000, 0xF3CF000, 0xF3CF000,	0xFFFF000, 0xFFFF000, 0x33CC000, 0x33CC000, 0xC003000, 0xC003000, 0x300C000, 0x300C000};

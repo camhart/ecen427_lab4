@@ -130,7 +130,10 @@ int detectBunkerHit(int x1, int x2, int y) {
 				int stopRow = startRow + 12;
 				int stopCol = startCol + 12;
 
-
+				if(x1 <= stopCol && x2 >= startCol && y <= stopRow && y >= startRow) {
+					xil_printf("erode %d %d, ", bunker, bunkerPart);
+					erodeBunker(bunker, bunkerPart);
+				}
 			}
 		}
 	}
