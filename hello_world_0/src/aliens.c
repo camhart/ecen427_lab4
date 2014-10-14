@@ -338,7 +338,7 @@ int detectAlienHit(int x1, int x2, int y) {
 					if(alive[column + row * 11]) {
 						hitAlienX = column;
 						hitAlienY = row;
-						xil_printf("%d, ", hitAlienY * 11 + hitAlienX);
+//						xil_printf("%d, ", hitAlienY * 11 + hitAlienX);
 						alive[hitAlienY * 11 + hitAlienX] = 0;
 						return 1;
 					}
