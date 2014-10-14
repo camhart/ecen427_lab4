@@ -37,14 +37,14 @@ void initializeScore(){
 inline int getScore1Pixel(int row, int col){
 	//access integer array for each pixel
 	if((score_part1[row] & (1<<(29-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
+		return 0xFFFFFF;
 	return 0;
 }
 
 inline int getScore2Pixel(int row, int col){
 	//access integer array for each pixel
 	if((score_part2[row] & (1<<(29-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
+		return 0xFFFFFF;
 	return 0;
 }
 
@@ -136,7 +136,61 @@ void drawBoss(){
 }
 
 void paintScore(int score){
-
+	int digitCount = 1;
+	paintDigit(digitCount, score);
+	while(score = score/10){
+		digitCount++;
+		paintDigit(digitCount, score);
+		if(digitCount > 9){
+			paintDigit(9, 999999999);
+		}
+	}
 }
 
+void paintDigit(int position, int value){
+	switch(value){
+	case(0):
+		drawDigit(zero, position);
+	case(1):
+		drawDigit(one, position);
+	case(2):
+		drawDigit(two, position);
+	case(3):
+		drawDigit(three, position);
+	case(4):
+		drawDigit(four, position);
+	case(5):
+		drawDigit(five, position);
+	case(6):
+		drawDigit(six, position);
+	case(7):
+		drawDigit(seven, position);
+	case(8):
+		drawDigit(eight, position);
+	default:
+		drawDigit(nine, position);
+	}
+}
+
+void drawDigit(int num[TEXT_HEIGHT], int pos){
+	int curRow,curCol;
+	int stopCol = pos*NUMBER_WIDTH + NUMBER_START_POS_X;
+	int startCol = (pos-1)*NUMBER_WIDTH + NUMBER_START_POS_X;
+	for(curRow = TOP_ROW; curRow < BOTTOM_ROW; curRow++) {	//step through row
+		int fb_row = curRow*640;	//get position in framebuffer
+		int rowDiff = curRow - BOTTOM_ROW;
+		for(curCol = startCol; curCol < stopCol; curCol++) {
+			//get the specific pixel value for the score block and assign framebuffer
+			int now = (num[rowDiff] & (1<<(12-curCol-startCol)));	//shift on integer to get individual bit
+			if(now){
+				framebuffer[fb_row + curCol] = 0x00FF00;
+				framebuffer[fb_row + (++curCol)] = 0x00FF00;
+			}
+			else{
+				framebuffer[fb_row + curCol] = now;
+				framebuffer[fb_row + (++curCol)] = now;
+			}
+		}
+	}
+}
 
