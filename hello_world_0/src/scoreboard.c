@@ -8,6 +8,10 @@
 #define SCORE_STOP_POSITION_X1 52
 #define SCORE_START_POSITION_X2 53
 #define SCORE_STOP_POSITION_X2 81
+#define LIVES_START_POSITION_X1 400
+#define LIVES_STOP_POSITION_X1 430
+#define LIVES_START_POSITION_X2 431
+#define LIVES_STOP_POSITION_X2 450
 #define NUMBER_START_POS_X 90
 #define NUMBER_WIDTH 12
 #define TOP_ROW 6
@@ -17,6 +21,8 @@
 //int bitmap of score, level, and numbers
 int score_part1[TEXT_HEIGHT] = {66863043, 66863043, 201375756, 201375756, 66109452, 66109452, 835596, 835596, 267403203, 267403203};
 int score_part2[TEXT_HEIGHT] = {1010811903, 1010811903, 53490432, 53490432, 54510588, 54510588, 53490432, 53490432, 1009791999, 1009791999};
+int lives_part1[TEXT_HEIGHT] = {1611030631, 1611030631, 1611030630, 1611030630, 1611030631, 1611030631, 1611012486, 1611012486, 2145781255, 2145781255};
+int lives_part2[TEXT_HEIGHT] = {520447, 520447, 768, 768, 508156, 508156, 3, 3, 521212, 521212};
 int one[TEXT_HEIGHT] = {15, 15, 3, 3, 3, 3, 3, 3, 3, 3};
 int two[TEXT_HEIGHT] = {1020, 1020, 3, 3, 255, 255, 768, 768, 1023, 1023};
 int three[TEXT_HEIGHT] = {1020, 1020, 3, 3, 255, 255, 3, 3, 1020, 1020};
@@ -43,67 +49,19 @@ inline int getScore2Pixel(int row, int col){
 	return 0;
 }
 
-inline int get1Pixel(int row, int col){
+inline int getLives1Pixel(int row, int col){
 	//access integer array for each pixel
-	if((one[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get2Pixel(int row, int col){
-	//access integer array for each pixel
-	if((two[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get3Pixel(int row, int col){
-	//access integer array for each pixel
-	if((three[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get4Pixel(int row, int col){
-	//access integer array for each pixel
-	if((four[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get5Pixel(int row, int col){
-	//access integer array for each pixel
-	if((five[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get6Pixel(int row, int col){
-	//access integer array for each pixel
-	if((six[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get7Pixel(int row, int col){
-	//access integer array for each pixel
-	if((seven[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get8Pixel(int row, int col){
-	//access integer array for each pixel
-	if((eight[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get9Pixel(int row, int col){
-	//access integer array for each pixel
-	if((nine[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
-	return 0;
-}
-inline int get0Pixel(int row, int col){
-	//access integer array for each pixel
-	if((zero[row] & (1<<(12-col))))	//shift on integer to get individual bit
-		return 0xFF0000;
+	if((lives_part1[row] & (1<<(30-col))))	//shift on integer to get individual bit
+		return 0xFFFFFF;
 	return 0;
 }
 
+inline int getLives2Pixel(int row, int col){
+	//access integer array for each pixel
+	if((lives_part2[row] & (1<<(18-col))))	//shift on integer to get individual bit
+		return 0xFFFFFF;
+	return 0;
+}
 
 void drawScore(){
 	int curRow, curCol;
@@ -113,14 +71,35 @@ void drawScore(){
 		//score part 1 paint
 		for(curCol = SCORE_START_POSITION_X1; curCol <= SCORE_STOP_POSITION_X1; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
-			int now = getScore1Pixel(rowDiff, curCol - SCORE_START_POSITION_X1);
+			int now = getLives1Pixel(rowDiff, curCol - SCORE_START_POSITION_X1);
 			framebuffer[fb_row + curCol] = now;
 			framebuffer[fb_row + (++curCol)] = now;
 		}
 		//score part 2 paint
 		for(curCol = SCORE_START_POSITION_X2; curCol <= SCORE_STOP_POSITION_X2; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
-			int now = getScore2Pixel(rowDiff, curCol - SCORE_START_POSITION_X2);
+			int now = getLives2Pixel(rowDiff, curCol - SCORE_START_POSITION_X2);
+			framebuffer[fb_row + curCol] = now;
+			framebuffer[fb_row + (++curCol)] = now;
+		}
+	}
+}
+void drawLives(){
+	int curRow, curCol;
+	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
+		int fb_row = curRow*640;	//get position in framebuffer
+		int rowDiff = curRow - TOP_ROW;
+		//score part 1 paint
+		for(curCol = LIVES_START_POSITION_X1; curCol <= LIVES_STOP_POSITION_X1; curCol++) {
+			//get the specific pixel value for the score block and assign framebuffer
+			int now = getScore1Pixel(rowDiff, curCol - LIVES_START_POSITION_X1);
+			framebuffer[fb_row + curCol] = now;
+			framebuffer[fb_row + (++curCol)] = now;
+		}
+		//score part 2 paint
+		for(curCol = LIVES_START_POSITION_X2; curCol <= LIVES_STOP_POSITION_X2; curCol++) {
+			//get the specific pixel value for the score block and assign framebuffer
+			int now = getScore2Pixel(rowDiff, curCol - LIVES_START_POSITION_X2);
 			framebuffer[fb_row + curCol] = now;
 			framebuffer[fb_row + (++curCol)] = now;
 		}
@@ -190,7 +169,8 @@ void drawDigit(int num[TEXT_HEIGHT], int pos){
 
 void initializeScore(){
 	drawScore();
-	paintScore(0);
+	drawLives();
+	paintScore(1235679);
 }
 
 
