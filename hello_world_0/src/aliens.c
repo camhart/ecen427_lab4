@@ -31,7 +31,7 @@ int middleInAlien[ALIEN_HEIGHT] = {50343936,50343936,12632064,12632064,67104768,
 int middleOutAlien[ALIEN_HEIGHT] = {50343936,50343936,817939200,817939200,872411904,872411904,1061109504,1061109504,1073741568,1073741568,268434432,268434432,50343936,50343936,201329664,201329664};
 int bottomOutAlien[ALIEN_HEIGHT] = {16744448,16744448,1073740800,1073740800,4294967040,4294967040,4231806720,4231806720,4294967040,4294967040,63160320,63160320,251719680,251719680,4026535680,4026535680};
 int bottomInAlien[ALIEN_HEIGHT] = {16744448,16744448,1073740800,1073740800,4294967040,4294967040,4231806720,4231806720,4294967040,4294967040,264499200,264499200,1010580480,1010580480,251719680,251719680};
-
+int explosion[18] = {12288, 12288, 3158208, 3158208, 786627, 786627, 197388, 197388, 15728655, 15728655, 3195072, 3195072, 12779568, 12779568, 199692, 199692, 3072, 3072};
 
 //int bitmaps for each missile type/orientation
 int missiles[4][2][10] = {
@@ -159,7 +159,12 @@ void drawAlienMissiles() {
 	}
 }
 
-
+int getExplosionPixel(int* missile, int x, int y) {
+	//access integer array for each pixel
+	if((explosion[y] & (1<<(23-x))))	//shift on integer to get individual bit
+		return 0xFFFFFF;
+	return 0;
+}
 
 int getMissilePixel(int* missile, int x, int y) {
 	//access integer array for each pixel
@@ -298,64 +303,26 @@ int getAlien(int x, int y) {
 	return (y % 24 * 11) + x % 32;
 }
 
+drawExplosion(int x, int y){
+	int cornerX = alienPosX + x*32;
+	int cornerY = alienPosY + y*24;
+	int stopX = cornerX + 24;
+	int stopY = cornerY + 18;
+	for(curRow = cornerY; curRow <= stopY; curRow++){
+		fb_row = curRow*640;
+		rowDiff = curRow - cornerY;
+		//iterate through the row/column and get individual pixel values
+		for(curCol = cornerX; curCol <= stopX; curCol++){
+			framebuffer[fb_row+curCol] = getExplosionPixel(rowDiff, curCol - cornerX);
+		}
+	}
+}
+
 int hitAlienX = -1;
 int hitAlienY = -1;
 
 int detectAlienHit(int x1, int x2, int y) {
-//	if(x1 > alienPosX + ALIEN_BLOCK_WIDTH) {
-//		return -1;
-//	}
-//
-//	if(x2 < alienPosX) {
-//		return -1;
-//	}
-//
-//	if(y < alienPosY + ALIEN_BLOCK_HEIGHT) {
-//		return -1;
-//	}
-//
-//	if(y - 10 > alienPosY) {
-//		return -1;
-//	}
 
-//	x1 = x1 - alienPosX;
-//	x2 = x2 - alienPosX;
-//	y = y - alienPosY;
-//	if(x2 < 0)		//bullet left of alien block
-//		return -1;
-////	if(x2 < 0)
-////		return 0;
-//	if(y < 0)		//bullet above alien block, wont hit it
-//		return -1;
-////	if(x1 > ALIEN_BLOCK_WIDTH)
-////		return 0;
-//	if(x1 > ALIEN_BLOCK_WIDTH)	//bullet right of alien block
-//		return -1;
-
-//	int c;
-//	for(c = 0; c < 12; c++) {
-//		if(getPixel(alienState, x1, y+c)) {
-//			int alien = getAlien(x1, y+c);
-//			if(alien > 54) {
-//				xil_printf("%d : %d,", alien, getPixel(alienState, x1, y+c));
-//				continue;
-//			}
-//			alive[alien] = 0;
-//			return alien;
-//		} else if(getPixel(alienState, x2, y+c)) {
-//			int alien = getAlien(x1, y+c);
-//			if(alien > 54) {
-//				xil_printf("%d : %d,", alien, getPixel(alienState, x2, y+c));
-//				continue;
-//			}
-//			alive[alien] = 0;
-//			return alien;
-//		}
-//	}
-//	return -1;'
-//	if(!isAlienAlive(x1 - ALIEN_BLOCK_WIDTH, y - ALIEN_BLOCK_HEIGHT)) {
-//		return 0;
-//	}
 	int alienWidth = 32;
 	int alienWidths[5] = {16, 22, 22, 24, 24}; //by row
 	int alienWidthOffset[5] = {4, 2, 2, 0, 0};
@@ -386,6 +353,7 @@ int detectAlienHit(int x1, int x2, int y) {
 						hitAlienY = row;
 //						xil_printf("%d, ", hitAlienY * 11 + hitAlienX);
 						alive[hitAlienY * 11 + hitAlienX] = 0;
+						drawExplosion(hitAlienX, hitAlienY);
 						return 1;
 					}
 				}

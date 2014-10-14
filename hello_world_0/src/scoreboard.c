@@ -125,7 +125,7 @@ void drawTankLife(int pos){
 	int curCol;
 	int startCol = 456 + pos*32;
 	int stopCol = startCol+32;
-	for(curRow = TOP_ROW-2; curRow <= BOTTOM_ROW+2; curRow++){
+	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW+2; curRow++){
 		fb_row = curRow*640;
 		rowDiff = curRow - TOP_ROW;
 		//iterate through the row/column and get individual pixel values
@@ -176,6 +176,7 @@ void paintScore(int score, int firstTime){
 }
 
 void paintDigit(int position, int value){
+	xil_printf("%d",value);
 	switch(value){
 	case(0):
 		drawDigit(zero, position);
