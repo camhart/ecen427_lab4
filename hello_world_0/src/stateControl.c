@@ -30,8 +30,11 @@ int centerButtonPressed() {
 	return (currentButtonState & 1);
 }
 
-void handleButtons() {
-	if(centerButtonPressed()) {
+int lastTankShotAt = 0;
+
+void handleButtons(int counter) {
+	if(centerButtonPressed() && counter - lastTankShotAt > 100000000) {
+		lastTankShotAt = counter;
 		fireTankMissile();
 	}
 	if(leftButtonPressed()) {
@@ -41,8 +44,6 @@ void handleButtons() {
 		tankPosX += 2;
 	}
 }
-
-int lastTankShotAt = 0;
 
 void makeChange(int counter) {
 	if(upButtonPressed()) {
@@ -88,12 +89,11 @@ void makeChange(int counter) {
 		}
 	}
 
-	if(rand() % ALIEN_BULLET_FIRE_PROBABILITY == 0 && counter - lastTankShotAt > 1000000) {
-		lastTankShotAt = counter;
+	if(rand() % ALIEN_BULLET_FIRE_PROBABILITY == 0) {
 		fireAlienMissile();
 	}
 
-	handleButtons();
+	handleButtons(counter);
 
 	if(counter % ALIEN_BLOCK_UPDATE == 0) {
 //		eraseAlienBlock();

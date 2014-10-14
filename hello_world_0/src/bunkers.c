@@ -104,7 +104,7 @@ void drawBunkerPart(int bunker, int bunkerPart){
 
 int detectBunkerHit(int x1, int x2, int y1, int y2) {
 	int bunker, curCol;
-	for(bunker = 0; bunker < 3; bunker++) {
+	for(bunker = 0; bunker < 4; bunker++) {
 		switch(bunker) {
 			case(0):
 				curCol = 90;

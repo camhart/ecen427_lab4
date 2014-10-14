@@ -159,7 +159,7 @@ void drawAlienMissiles() {
 	}
 }
 
-int getExplosionPixel(int* missile, int x, int y) {
+int getExplosionPixel(int x, int y) {
 	//access integer array for each pixel
 	if((explosion[y] & (1<<(23-x))))	//shift on integer to get individual bit
 		return 0xFFFFFF;
@@ -303,11 +303,12 @@ int getAlien(int x, int y) {
 	return (y % 24 * 11) + x % 32;
 }
 
-drawExplosion(int x, int y){
+void drawExplosion(int x, int y){
 	int cornerX = alienPosX + x*32;
 	int cornerY = alienPosY + y*24;
 	int stopX = cornerX + 24;
 	int stopY = cornerY + 18;
+	int curRow, curCol, fb_row, rowDiff;
 	for(curRow = cornerY; curRow <= stopY; curRow++){
 		fb_row = curRow*640;
 		rowDiff = curRow - cornerY;
