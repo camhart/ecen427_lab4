@@ -245,28 +245,55 @@ int getAlien(int x, int y) {
 }
 
 int detectAlienHit(int x1, int x2, int y) {
+	if(x1 > alienPosX + ALIEN_BLOCK_WIDTH) {
+		return -1;
+	}
+
+	if(x2 < alienPosX) {
+		return -1;
+	}
+
+	if(y < alienPosY + ALIEN_BLOCK_HEIGHT) {
+		return -1;
+	}
+
+	if(y - 10 > alienPosY) {
+		return -1;
+	}
+
 	x1 = x1 - alienPosX;
 	x2 = x2 - alienPosX;
 	y = y - alienPosY;
-	if(x2 < 0)		//bullet left of alien block
-		return 0;
-//	if(x2 < 0)
-//		return 0;
-	if(y < 0)		//bullet above alien block, wont hit it
-		return 0;
-//	if(x1 > ALIEN_BLOCK_WIDTH)
-//		return 0;
-	if(x1 > ALIEN_BLOCK_WIDTH)	//bullet right of alien block
-		return 0;
+//	if(x2 < 0)		//bullet left of alien block
+//		return -1;
+////	if(x2 < 0)
+////		return 0;
+//	if(y < 0)		//bullet above alien block, wont hit it
+//		return -1;
+////	if(x1 > ALIEN_BLOCK_WIDTH)
+////		return 0;
+//	if(x1 > ALIEN_BLOCK_WIDTH)	//bullet right of alien block
+//		return -1;
 
-	if(getPixel(alienState, x1, y)) {
-		int alien = getAlien(x1, y);
-		alive[alien] = 0;
-		return alien;
-	} else if(getPixel(alienState, x2, y)) {
-		int alien = getAlien(x1, y);
-		alive[alien] = 0;
-		return alien;
+	int c;
+	for(c = 0; c < 12; c++) {
+		if(getPixel(alienState, x1, y+c)) {
+			int alien = getAlien(x1, y+c);
+			if(alien > 54) {
+				xil_printf("%d,", alien);
+				continue;
+			}
+			alive[alien] = 0;
+			return alien;
+		} else if(getPixel(alienState, x2, y+c)) {
+			int alien = getAlien(x1, y+c);
+			if(alien > 54) {
+				xil_printf("%d,", alien);
+				continue;
+			}
+			alive[alien] = 0;
+			return alien;
+		}
 	}
 	return -1;
 }
