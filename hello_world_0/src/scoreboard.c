@@ -104,6 +104,7 @@ inline int get0Pixel(int row, int col){
 	return 0;
 }
 
+
 void drawScore(){
 	int curRow, curCol;
 	for(curRow = TOP_ROW; curRow < BOTTOM_ROW; curRow++) {	//step through row
@@ -184,6 +185,7 @@ void drawDigit(int num[TEXT_HEIGHT], int pos){
 		}
 	}
 }
+
 
 void initializeScore(){
 	drawScore();
