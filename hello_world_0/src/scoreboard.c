@@ -159,50 +159,40 @@ void paintDigit(int position, int value){
 	switch(value){
 	case(0):
 		drawDigit(zero, position);
-		xil_printf("zero");
 		break;
 	case(1):
 		drawDigit(one, position);
-		xil_printf("one");
 		break;
 	case(2):
 		drawDigit(two, position);
-		xil_printf("two");
 		break;
 	case(3):
 		drawDigit(three, position);
-		xil_printf("three");
 		break;
 	case(4):
 		drawDigit(four, position);
-		xil_printf("four");
 		break;
 	case(5):
 		drawDigit(five, position);
-		xil_printf("five");
 		break;
 	case(6):
 		drawDigit(six, position);
-		xil_printf("six");
 		break;
 	case(7):
 		drawDigit(seven, position);
-		xil_printf("seven");
 		break;
 	case(8):
 		drawDigit(eight, position);
-		xil_printf("eight");
 		break;
 	default:
 		drawDigit(nine, position);
-		xil_printf("nine");
 		break;
 	}
 }
 
 void drawDigit(int num[TEXT_HEIGHT], int pos){
 	int curRow,curCol;
-	int stopCol = pos*NUMBER_WIDTH + NUMBER_START_POS_X;
+	int stopCol = pos*NUMBER_WIDTH + NUMBER_START_POS_X + 2;
 	int startCol = (pos-1)*NUMBER_WIDTH + NUMBER_START_POS_X;
 	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
 		int fb_row = curRow*640;	//get position in framebuffer
