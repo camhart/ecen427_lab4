@@ -146,21 +146,25 @@ void resetFirstDigit(){
 	isNotFirstDigit = 0;
 }
 
-void paintScore(int score, int firstTime){
-	if(firstTime){
-		resetFirstDigit();	//we're starting a new score display
-	}
-	if(score/10 > 0){
-		paintScore(score/10, 0);	//
-	}
-	else{
-		if(isNotFirstDigit){
-			paintDigit(++whichDigit, score);
-		else{	//we've hit the lowest digit, so start counting up the digits now
-			whichDigit = 1;
-			paintDigit(whichDigit, score);
-			isNotFirstDigit = 1;
-		}
+void paintScore(int score, int digitCount){//, int firstTime){
+//	if(firstTime){
+//		resetFirstDigit();	//we're starting a new score display
+//	}
+//	if(score/10 > 0){
+//		paintScore(score/10, 0);	//
+//	}
+//	else{
+//		if(isNotFirstDigit){
+//			paintDigit(++whichDigit, score);
+//		else{	//we've hit the lowest digit, so start counting up the digits now
+//			whichDigit = 1;
+//			paintDigit(whichDigit, score);
+//			isNotFirstDigit = 1;
+//		}
+//	}
+	if(score > 9){
+		paintDigit(digitCount, score % 10);
+		paintScore(score/10, ++digitCount);
 	}
 	//paintDigit(digitCount, score);
 	//xil_printf("%d", score);
@@ -179,10 +183,13 @@ void paintDigit(int position, int value){
 	switch(value){
 	case(0):
 		drawDigit(zero, position);
+		xil_printf("zero");
 	case(1):
 		drawDigit(one, position);
+		xil_printf("one");
 	case(2):
 		drawDigit(two, position);
+		xil_printf("two");
 	case(3):
 		drawDigit(three, position);
 	case(4):
@@ -195,8 +202,10 @@ void paintDigit(int position, int value){
 		drawDigit(seven, position);
 	case(8):
 		drawDigit(eight, position);
+		xil_printf("eight");
 	default:
 		drawDigit(nine, position);
+		xil_printf("nine");
 	}
 }
 

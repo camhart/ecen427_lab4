@@ -308,11 +308,11 @@ drawExplosion(int x, int y){
 	int cornerY = alienPosY + y*24;
 	int stopX = cornerX + 24;
 	int stopY = cornerY + 18;
-	for(curRow = cornerY; curRow <= stopY; curRow++){
+	for(curRow = cornerY; curRow < stopY; curRow++){
 		fb_row = curRow*640;
 		rowDiff = curRow - cornerY;
 		//iterate through the row/column and get individual pixel values
-		for(curCol = cornerX; curCol <= stopX; curCol++){
+		for(curCol = cornerX; curCol < stopX; curCol++){
 			framebuffer[fb_row+curCol] = getExplosionPixel(rowDiff, curCol - cornerX);
 		}
 	}
