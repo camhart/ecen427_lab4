@@ -62,5 +62,8 @@ void drawBoss(){
 	}
 }
 
+void paintScore(int score){
+
+}
 
 
