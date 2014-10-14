@@ -210,7 +210,7 @@ void drawAlienBlock(int startRow, int startCol) {
 
 	int bound2 = startCol + ALIEN_BLOCK_WIDTH + 8;
 
-	int bound3 = startCol + ALIEN_BLOCK_WIDTH - 1;
+	int bound3 = startCol + ALIEN_BLOCK_WIDTH;//-1;
 
 	int fb_row;
 	for(curRow = startRow - 12; curRow < bound1; curRow++) {	//step through row
@@ -218,22 +218,26 @@ void drawAlienBlock(int startRow, int startCol) {
 		fb_row = curRow*640;	//get position in framebuffer
 		if(isSpaceRow(rowDiff)) {	//save time if we know the whole row is blank
 			for(curCol = startCol - 8; curCol < bound2; curCol++) {	//step through column
-//				framebuffer[fb_row + curCol] = 0;
+				if(!(framebuffer[fb_row + curCol] == 0x00FF00))
+					framebuffer[fb_row + curCol] = 0;
 			}
 			continue;
 		}
 		for(curCol = startCol - 8; curCol < bound3; curCol++) {
 
 			if(curCol < startCol) {	//erase left
-//				framebuffer[fb_row + curCol] = 0;
+				if(!(framebuffer[fb_row + curCol] == 0x00FF00))
+					framebuffer[fb_row + curCol] = 0;
 			} else if(curCol > bound3) {	//erase right
-//				framebuffer[fb_row + curCol] = 0;
+				if(!(framebuffer[fb_row + curCol] == 0x00FF00))
+					framebuffer[fb_row + curCol] = 0;
 			} else if(curRow < startRow) {	//erase top
-//				framebuffer[fb_row + curCol] = 0;
+				if(!(framebuffer[fb_row + curCol] == 0x00FF00))
+					framebuffer[fb_row + curCol] = 0;
 			}
 			else {	//get the specific pixel value for the alien block and assign framebuffer
 				int now = getPixel(alienState, rowDiff, curCol - startCol);
-				if(now){
+				if(!(framebuffer[fb_row + curCol] == 0x00FF00)){
 					framebuffer[fb_row + curCol] = now;
 					framebuffer[fb_row + (++curCol)] = now;
 				}
@@ -243,7 +247,7 @@ void drawAlienBlock(int startRow, int startCol) {
 }
 
 void eraseAlienBlock(int startRow, int startCol) {
-int curRow, curCol;
+	int curRow, curCol;
 	int rowDiff;
 
 	int bound1 = startRow + ALIEN_BLOCK_HEIGHT;

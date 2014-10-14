@@ -7,6 +7,7 @@
 #include "tank.h"
 #include "bunkers.h"
 #include "boss.h"
+#include "scoreboard.h"
 
 //static const short ALIEN_BLOCK_HEIGHT = 120;	//total alien height
 //static const short ALIEN_BLOCK_WIDTH = 352;		//total un-altered alien width
@@ -30,13 +31,16 @@ void render() {
 	drawAlienMissiles();
 	drawAlienMissiles();
 	drawBoss();
-	initializeBunkers();
+//	initializeBunkers();
 	drawTank();
+
 }
 
 void lab4init(unsigned int * fb) {
 	framebuffer = fb;
 	initializeBoss();
+	initializeBunkers();
+	initializeScore();
 }
 
 void lab3run(unsigned int * fb) {

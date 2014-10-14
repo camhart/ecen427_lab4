@@ -43,6 +43,9 @@ void handleButtons() {
 }
 
 void makeChange(int counter) {
+	if(upButtonPressed()) {
+		return;
+	}
 	if(counter % BULLET_UPDATE == 0) {
 		updateAlienMissiles(1);
 
@@ -74,7 +77,10 @@ void makeChange(int counter) {
 	handleButtons();
 
 	if(counter % ALIEN_BLOCK_UPDATE == 0) {
-		eraseAlienBlock();
+//		eraseAlienBlock();
+//		int q = 0;
+//		for(q = 0; q < 10000; q++)
+//			xil_printf(".");
 		moveAliens();
 		alienBlockMoved = 1;
 	}
