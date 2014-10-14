@@ -25,7 +25,6 @@ int counter = 0;
 void timer_interrupt_handler() {
 	counter++;
 	makeChange(counter);
-	xil_printf(".");
 }
 
 int currentButtonState;
@@ -36,9 +35,6 @@ void pb_interrupt_handler() {
   XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
   currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
   // You need to do something here.
-
-  xil_printf("p");
-
 
   XGpio_InterruptClear(&gpPB, 0xFFFFFFFF);            // Ack the PB interrupt.
   XGpio_InterruptGlobalEnable(&gpPB);                 // Re-enable PB interrupts.
@@ -151,21 +147,30 @@ int main()
      // Initialize the GPIO peripherals.
      int success;
      success = XGpio_Initialize(&gpPB, XPAR_PUSH_BUTTONS_5BITS_DEVICE_ID);
+
      // Set the push button peripheral to be inputs.
      XGpio_SetDataDirection(&gpPB, 1, 0x0000001F);
+
      // Enable the global GPIO interrupt for push buttons.
      XGpio_InterruptGlobalEnable(&gpPB);
+
      // Enable all interrupts in the push button peripheral.
      XGpio_InterruptEnable(&gpPB, 0xFFFFFFFF);
 
+
      microblaze_register_handler(interrupt_handler_dispatcher, NULL);
+
      XIntc_EnableIntr(XPAR_INTC_0_BASEADDR,
      		(XPAR_FIT_TIMER_0_INTERRUPT_MASK | XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK));
+
      XIntc_MasterEnable(XPAR_INTC_0_BASEADDR);
-     microblaze_enable_interrupts();
+
 
      lab4init(framePointer0);
-//     render();
+
+     render();
+     microblaze_enable_interrupts();
+
      while (1);
 //     {
 //    	 lab3run(framePointer0);

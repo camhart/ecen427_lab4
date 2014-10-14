@@ -8,7 +8,7 @@ int bossPosX = 2; //boss starting point
 int bossTopRow = 20;	//boss top Y position
 int bossBottomRow = 34;	//boss bottom Y position
 static int bossDir = 1;	 //right (direction boss is moving)
-static int bossExists = 0;
+int bossExists = 0;
 
 //int bitmap of ship
 int boss[BOSS_HEIGHT] = {4193280, 4193280, 67108800, 67108800, 268435440, 268435440, 1022611260, 1022611260, 4294967295L, 4294967295L, 264487920, 264487920, 50331840, 50331840};

@@ -14,6 +14,7 @@
 unsigned int * framebuffer;
 
 int state = 0;	//state of bullets
+char alienState = 0;
 
 int alienBlockMoved = 1;	//track movement
 
@@ -24,6 +25,7 @@ void render() {
 	drawAlienMissiles();
 	drawAlienMissiles();
 	if(alienBlockMoved) {
+		alienState = !alienState;
 		drawAlienBlock(alienPosY, alienPosX);
 		alienBlockMoved = 0;
 	}

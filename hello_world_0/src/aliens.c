@@ -1,6 +1,7 @@
 #include <xparameters.h>
 
 #include "displayControl.h"
+#include "stateControl.h"
 #include "globals.h"
 #include "aliens.h"
 
@@ -231,7 +232,7 @@ void drawAlienBlock(int startRow, int startCol) {
 				framebuffer[fb_row + curCol] = 0;
 			}
 			else {	//get the specific pixel value for the alien block and assign framebuffer
-				int now = getPixel(state, rowDiff, curCol - startCol);
+				int now = getPixel(alienState, rowDiff, curCol - startCol);
 				framebuffer[fb_row + curCol] = now;
 				framebuffer[fb_row + (++curCol)] = now;
 			}
