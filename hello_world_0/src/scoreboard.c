@@ -22,6 +22,7 @@
 int score_part1[TEXT_HEIGHT] = {66863043, 66863043, 201375756, 201375756, 66109452, 66109452, 835596, 835596, 267403203, 267403203};
 int score_part2[TEXT_HEIGHT] = {1010811903, 1010811903, 53490432, 53490432, 54510588, 54510588, 53490432, 53490432, 1009791999, 1009791999};
 int lives_part1[TEXT_HEIGHT] = {1611030631, 1611030631, 1611030630, 1611030630, 1611030631, 1611030631, 1611012486, 1611012486, 2145781255, 2145781255};
+int tank[12] = {12288,12288,64512,64512,16777212,16777212,67108863,67108863,67108863,67108863,67108863,67108863};
 int lives_part2[TEXT_HEIGHT] = {520447, 520447, 768, 768, 508156, 508156, 3, 3, 521212, 521212};
 int one[TEXT_HEIGHT] = {15, 15, 3, 3, 3, 3, 3, 3, 3, 3};
 int two[TEXT_HEIGHT] = {1020, 1020, 3, 3, 255, 255, 768, 768, 1023, 1023};
@@ -63,6 +64,15 @@ inline int getLives2Pixel(int row, int col){
 	return 0;
 }
 
+
+int getTankPixel(int row, int col) {
+	if(col < 0 || col > 32)
+		return 0;	//erase before/after tank	}
+	else if ((tank[row] & (1<<(31-col))))	//shift on integer to get individual bit
+		return 0x00FF00;	//draw tank body
+	else return 0;
+}
+
 void drawScore(){
 	int curRow, curCol;
 	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
@@ -71,14 +81,14 @@ void drawScore(){
 		//score part 1 paint
 		for(curCol = SCORE_START_POSITION_X1; curCol <= SCORE_STOP_POSITION_X1; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
-			int now = getLives1Pixel(rowDiff, curCol - SCORE_START_POSITION_X1);
+			int now = getScore1Pixel(rowDiff, curCol - SCORE_START_POSITION_X1);
 			framebuffer[fb_row + curCol] = now;
 			framebuffer[fb_row + (++curCol)] = now;
 		}
 		//score part 2 paint
 		for(curCol = SCORE_START_POSITION_X2; curCol <= SCORE_STOP_POSITION_X2; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
-			int now = getLives2Pixel(rowDiff, curCol - SCORE_START_POSITION_X2);
+			int now = getScore2Pixel(rowDiff, curCol - SCORE_START_POSITION_X2);
 			framebuffer[fb_row + curCol] = now;
 			framebuffer[fb_row + (++curCol)] = now;
 		}
@@ -92,28 +102,54 @@ void drawLives(){
 		//score part 1 paint
 		for(curCol = LIVES_START_POSITION_X1; curCol <= LIVES_STOP_POSITION_X1; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
-			int now = getScore1Pixel(rowDiff, curCol - LIVES_START_POSITION_X1);
+			int now = getLives1Pixel(rowDiff, curCol - LIVES_START_POSITION_X1);
 			framebuffer[fb_row + curCol] = now;
 			framebuffer[fb_row + (++curCol)] = now;
 		}
 		//score part 2 paint
 		for(curCol = LIVES_START_POSITION_X2; curCol <= LIVES_STOP_POSITION_X2; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
-			int now = getScore2Pixel(rowDiff, curCol - LIVES_START_POSITION_X2);
+			int now = getLives2Pixel(rowDiff, curCol - LIVES_START_POSITION_X2);
 			framebuffer[fb_row + curCol] = now;
 			framebuffer[fb_row + (++curCol)] = now;
 		}
 	}
 }
 
+void drawTank(int pos){
+	int fb_row;
+	int rowDiff;
+	int curRow;
+	int curCol;
+	int startCol = 456 + pos*32;
+	int stopCol = startCol+32;
+	for(curRow = TOP_ROW-2; curRow <= BOTTOM_ROW+2; curRow++){
+		fb_row = curRow*640;
+		rowDiff = curRow - TOP_ROW;
+		//iterate through the row/column and get individual pixel values
+		for(curCol = startCol; curCol <= stopCol; curCol++){
+			framebuffer[fb_row+curCol] = getTankPixel(rowDiff, curCol - startCol);
+		}
+	}
+}
+
+void drawTankLives(int lives){
+	int i;
+	for(i=lives; i > 0; i--){
+		drawTank(i);
+	}
+}
+
 void paintScore(int score){
 	int digitCount = 1;
 	paintDigit(digitCount, score);
+	xil_printf("%d", score);
 	while(score = score/10){
+		xil_printf("%d", score);
 		digitCount++;
 		paintDigit(digitCount, score);
 		if(digitCount > 9){
-			paintDigit(9, 999999999);
+			paintScore(9, 999999999);
 		}
 	}
 }
@@ -170,6 +206,7 @@ void drawDigit(int num[TEXT_HEIGHT], int pos){
 void initializeScore(){
 	drawScore();
 	drawLives();
+	drawTankLives(3);
 	paintScore(1235679);
 }
 
