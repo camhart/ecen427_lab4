@@ -240,30 +240,41 @@ void drawAlienBlock(int startRow, int startCol) {
 	}
 }
 
+int getAlienBlockWidth() {
+	return ALIEN_BLOCK_WIDTH;
+}
+
+int getAlienBlockHeight() {
+	return ALIEN_BLOCK_HEIGHT;
+}
+
 int getAlien(int x, int y) {
 	return (y % 24 * 11) + x % 32;
 }
 
+int hitAlienX = -1;
+int hitAlienY = -1;
+
 int detectAlienHit(int x1, int x2, int y) {
-	if(x1 > alienPosX + ALIEN_BLOCK_WIDTH) {
-		return -1;
-	}
+//	if(x1 > alienPosX + ALIEN_BLOCK_WIDTH) {
+//		return -1;
+//	}
+//
+//	if(x2 < alienPosX) {
+//		return -1;
+//	}
+//
+//	if(y < alienPosY + ALIEN_BLOCK_HEIGHT) {
+//		return -1;
+//	}
+//
+//	if(y - 10 > alienPosY) {
+//		return -1;
+//	}
 
-	if(x2 < alienPosX) {
-		return -1;
-	}
-
-	if(y < alienPosY + ALIEN_BLOCK_HEIGHT) {
-		return -1;
-	}
-
-	if(y - 10 > alienPosY) {
-		return -1;
-	}
-
-	x1 = x1 - alienPosX;
-	x2 = x2 - alienPosX;
-	y = y - alienPosY;
+//	x1 = x1 - alienPosX;
+//	x2 = x2 - alienPosX;
+//	y = y - alienPosY;
 //	if(x2 < 0)		//bullet left of alien block
 //		return -1;
 ////	if(x2 < 0)
@@ -275,25 +286,66 @@ int detectAlienHit(int x1, int x2, int y) {
 //	if(x1 > ALIEN_BLOCK_WIDTH)	//bullet right of alien block
 //		return -1;
 
-	int c;
-	for(c = 0; c < 12; c++) {
-		if(getPixel(alienState, x1, y+c)) {
-			int alien = getAlien(x1, y+c);
-			if(alien > 54) {
-				xil_printf("%d,", alien);
-				continue;
+//	int c;
+//	for(c = 0; c < 12; c++) {
+//		if(getPixel(alienState, x1, y+c)) {
+//			int alien = getAlien(x1, y+c);
+//			if(alien > 54) {
+//				xil_printf("%d : %d,", alien, getPixel(alienState, x1, y+c));
+//				continue;
+//			}
+//			alive[alien] = 0;
+//			return alien;
+//		} else if(getPixel(alienState, x2, y+c)) {
+//			int alien = getAlien(x1, y+c);
+//			if(alien > 54) {
+//				xil_printf("%d : %d,", alien, getPixel(alienState, x2, y+c));
+//				continue;
+//			}
+//			alive[alien] = 0;
+//			return alien;
+//		}
+//	}
+//	return -1;'
+//	if(!isAlienAlive(x1 - ALIEN_BLOCK_WIDTH, y - ALIEN_BLOCK_HEIGHT)) {
+//		return 0;
+//	}
+	int alienWidth = 32;
+	int alienWidths[5] = {16, 22, 22, 24, 24}; //by row
+	int alienWidthOffset[5] = {4, 2, 2, 0, 0};
+
+	int alienHeight = 16;
+	int spaceRowCount = 8;
+
+	int startX = alienPosX;
+	int endX = alienPosX + getAlienBlockWidth();
+	int startY = alienPosY;
+	int endY = alienPosY + getAlienBlockHeight();
+	int row, column;
+	if(x2 >= startX && x1 <= endX && y <= endY && y >= startY) {
+		for(row = 0; row < 5; row++) {
+			for(column = 0; column < 11; column++) {
+
+					//in alien block
+//				if(x1 >= startX + column * )
+				startX = alienPosX + column * alienWidth + alienWidthOffset[row];
+				endX = startX + alienWidths[row];
+
+				startY = alienPosY + row * (alienHeight + spaceRowCount);
+				endY = startY + alienHeight;
+
+				if(x2 >= startX && x1 <= endX && y >= startY && y <= endY) {
+					if(alive[column + row * 11]) {
+						hitAlienX = column;
+						hitAlienY = row;
+						xil_printf("%d, ", hitAlienY * 11 + hitAlienX);
+						alive[hitAlienY * 11 + hitAlienX] = 0;
+						return 1;
+					}
+				}
+
 			}
-			alive[alien] = 0;
-			return alien;
-		} else if(getPixel(alienState, x2, y+c)) {
-			int alien = getAlien(x1, y+c);
-			if(alien > 54) {
-				xil_printf("%d,", alien);
-				continue;
-			}
-			alive[alien] = 0;
-			return alien;
 		}
 	}
-	return -1;
+	return 0;
 }

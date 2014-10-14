@@ -58,6 +58,7 @@ void makeChange(int counter) {
 				eraseTankMissile();
 				tankMissile = 0;
 				tankMissileY = 438;
+
 			}
 		}
 		//detect hit, if it, moved = 1;
