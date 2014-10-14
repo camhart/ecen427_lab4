@@ -187,7 +187,6 @@ void drawDigit(int num[TEXT_HEIGHT], int pos){
 		int fb_row = curRow*640;	//get position in framebuffer
 		int rowDiff = curRow - TOP_ROW;
 		for(curCol = startCol; curCol <= stopCol; curCol++) {
-			xil_printf(".");
 			//get the specific pixel value for the score block and assign framebuffer
 			int now = (num[rowDiff] & (1<<(12-(curCol-startCol))));	//shift on integer to get individual bit
 			if(now){
