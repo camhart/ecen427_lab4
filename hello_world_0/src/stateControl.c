@@ -78,5 +78,6 @@ void makeChange(int counter) {
 		alienBlockMoved = 1;
 	}
 	
+
 	render();
 }
