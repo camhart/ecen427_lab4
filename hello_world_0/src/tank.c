@@ -7,9 +7,9 @@ int tank[12] = {12288,12288,64512,64512,16777212,16777212,67108863,67108863,6710
 
 int tankPosX = 152;	//tank location
 
-static int tankMissile = 0;	//is there a tank missile?
-static int tankMissileX = -1;	//location
-static int tankMissileY = 438;	//location
+int tankMissile = 0;	//is there a tank missile?
+int tankMissileX = -1;	//location
+int tankMissileY = 438;	//location
 
 
 void fireTankMissile(){
@@ -19,9 +19,22 @@ void fireTankMissile(){
 	}
 }
 
+//clean up to avoid bugs when writing values outside of the framebuffer
+void eraseTankMissile(){
+	int cy, cx;
+
+	for(cy = tankMissileY-10; cy < tankMissileY + 12; cy++) {
+		for(cx = tankMissileX; cx < tankMissileX + 2; cx++) {
+			if(cy > tankMissileY && tankMissileY >= 0 && tankMissileY <= 639) {
+				framebuffer[cy * 640 + cx] = 0;
+			}
+		}
+	}
+}
+
 void updateTankMissile(int changePosition){
 	if(changePosition && tankMissile) {
-		tankMissileY -= 10;
+		tankMissileY -= 5;
 	}
 	if(tankMissileY < 0){	//if we've hit the end of the screen, remove missile entirely
 		eraseTankMissile();
@@ -29,17 +42,7 @@ void updateTankMissile(int changePosition){
 		tankMissileY = 438;
 	}
 }
-//clean up to avoid bugs when writing values outside of the framebuffer
-void eraseTankMissile(){
-	int cy, cx;
-	for(cy = tankMissileY-10; cy < tankMissileY + 12; cy++) {
-		for(cx = tankMissileX; cx < tankMissileX + 2; cx++) {
-			if(cy > tankMissileY) {
-				framebuffer[cy * 640 + cx] = 0;
-			}
-		}
-	}
-}
+
 //actual drawing of missile
 void drawTankMissile(){
 	int cx, cy;
@@ -55,6 +58,15 @@ void drawTankMissile(){
 		}
 	}
 }
+
+//void eraseTankMissile2() {
+//	int cx, cy;
+//	for(cy = tankMissileY-10; cy < tankMissileY + 12; cy++) {
+//		for(cx = tankMissileX; cx < tankMissileX + 2; cx++) {
+//			framebuffer[cy * 640 + cx] = 0;	//erase previous missle
+//		}
+//	}
+//}
 
 int getTankPixel(int row, int col) {
 	if(col < 0 || col > 32)
