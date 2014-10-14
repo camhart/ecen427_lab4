@@ -42,6 +42,8 @@ void handleButtons() {
 	}
 }
 
+int lastTankShotAt = 0;
+
 void makeChange(int counter) {
 	if(upButtonPressed()) {
 		return;
@@ -51,7 +53,7 @@ void makeChange(int counter) {
 		int c;
 		for(c = 0; c < 4; c++) {
 			if(missileType[c] != -1) {
-				int hit = detectBunkerHit(missileX[c], missileX[c] + 5, missileY[c]);
+				int hit = detectBunkerHit(missileX[c], missileX[c] + 5, missileY[c]-10, missileY[c]);
 				if(hit) {
 					eraseAlienMissile(c);
 				}
@@ -68,6 +70,13 @@ void makeChange(int counter) {
 				tankMissileY = 438;
 
 			}
+			int hit = detectBunkerHit(tankMissileX, tankMissileX+2, tankMissileY - 10, tankMissileY);
+			if(hit) {
+//				eraseAlienMissile(c);
+				eraseTankMissile();
+				tankMissile = 0;
+				tankMissileY = 438;
+			}
 		}
 		//detect hit, if it, moved = 1;
 	}
@@ -79,7 +88,8 @@ void makeChange(int counter) {
 		}
 	}
 
-	if(rand() % ALIEN_BULLET_FIRE_PROBABILITY == 0) {
+	if(rand() % ALIEN_BULLET_FIRE_PROBABILITY == 0 && counter - lastTankShotAt > 1000000) {
+		lastTankShotAt = counter;
 		fireAlienMissile();
 	}
 

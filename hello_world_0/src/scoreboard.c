@@ -156,6 +156,7 @@ void paintScore(int score, int firstTime){
 	else{
 		if(isNotFirstDigit){
 			paintDigit(++whichDigit, score);
+		}
 		else{	//we've hit the lowest digit, so start counting up the digits now
 			whichDigit = 1;
 			paintDigit(whichDigit, score);

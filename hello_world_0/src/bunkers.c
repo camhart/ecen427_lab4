@@ -102,7 +102,7 @@ void drawBunkerPart(int bunker, int bunkerPart){
 	}
 }
 
-int detectBunkerHit(int x1, int x2, int y) {
+int detectBunkerHit(int x1, int x2, int y1, int y2) {
 	int bunker, curCol;
 	for(bunker = 0; bunker < 3; bunker++) {
 		switch(bunker) {
@@ -129,8 +129,8 @@ int detectBunkerHit(int x1, int x2, int y) {
 				int startRow = 380 + (bunkerPart/4)*12;	//shift to specific piece of bunker
 				int stopRow = startRow + 12;
 				int stopCol = startCol + 12;
-				if(x1 <= stopCol && x2 >= startCol && y <= stopRow && y >= startRow) {
-					xil_printf("erode %d %d, ", bunker, bunkerPart);
+				if(x1 <= stopCol && x2 >= startCol && y1 <= stopRow && y2 >= startRow) {
+//					xil_printf("erode %d %d, ", bunker, bunkerPart);
 					erodeBunker(bunker, bunkerPart);
 					return 1;
 				}
