@@ -21,14 +21,14 @@ int alienBlockMoved = 1;	//track movement
 void render() {
 	//draw everything!
 	state = !state;
-	drawTankMissile();
-	drawAlienMissiles();
-	drawAlienMissiles();
 	if(alienBlockMoved) {
 		alienState = !alienState;
 		drawAlienBlock(alienPosY, alienPosX);
 		alienBlockMoved = 0;
 	}
+	drawTankMissile();
+	drawAlienMissiles();
+	drawAlienMissiles();
 	drawBoss();
 	initializeBunkers();
 	drawTank();

@@ -43,10 +43,6 @@ void handleButtons() {
 }
 
 void makeChange(int counter) {
-	if(counter % ALIEN_BLOCK_UPDATE == 0) {
-		moveAliens();
-		alienBlockMoved = 1;
-	}
 	if(counter % BULLET_UPDATE == 0) {
 		updateAlienMissiles(1);
 
@@ -76,5 +72,11 @@ void makeChange(int counter) {
 
 	handleButtons();
 
+	if(counter % ALIEN_BLOCK_UPDATE == 0) {
+		eraseAlienBlock();
+		moveAliens();
+		alienBlockMoved = 1;
+	}
+	
 	render();
 }
