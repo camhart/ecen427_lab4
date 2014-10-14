@@ -107,18 +107,18 @@ inline int get0Pixel(int row, int col){
 
 void drawScore(){
 	int curRow, curCol;
-	for(curRow = TOP_ROW; curRow < BOTTOM_ROW; curRow++) {	//step through row
+	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
 		int fb_row = curRow*640;	//get position in framebuffer
 		int rowDiff = curRow - TOP_ROW;
 		//score part 1 paint
-		for(curCol = SCORE_START_POSITION_X1; curCol < SCORE_STOP_POSITION_X1; curCol++) {
+		for(curCol = SCORE_START_POSITION_X1; curCol <= SCORE_STOP_POSITION_X1; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
 			int now = getScore1Pixel(rowDiff, curCol - SCORE_START_POSITION_X1);
 			framebuffer[fb_row + curCol] = now;
 			framebuffer[fb_row + (++curCol)] = now;
 		}
 		//score part 2 paint
-		for(curCol = SCORE_START_POSITION_X2; curCol < SCORE_STOP_POSITION_X2; curCol++) {
+		for(curCol = SCORE_START_POSITION_X2; curCol <= SCORE_STOP_POSITION_X2; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
 			int now = getScore2Pixel(rowDiff, curCol - SCORE_START_POSITION_X2);
 			framebuffer[fb_row + curCol] = now;
@@ -168,12 +168,13 @@ void drawDigit(int num[TEXT_HEIGHT], int pos){
 	int curRow,curCol;
 	int stopCol = pos*NUMBER_WIDTH + NUMBER_START_POS_X;
 	int startCol = (pos-1)*NUMBER_WIDTH + NUMBER_START_POS_X;
-	for(curRow = TOP_ROW; curRow < BOTTOM_ROW; curRow++) {	//step through row
+	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
 		int fb_row = curRow*640;	//get position in framebuffer
 		int rowDiff = curRow - TOP_ROW;
-		for(curCol = startCol; curCol < stopCol; curCol++) {
+		for(curCol = startCol; curCol <= stopCol; curCol++) {
+			xil_printf(".");
 			//get the specific pixel value for the score block and assign framebuffer
-			int now = (num[rowDiff] & (1<<(12-curCol-startCol)));	//shift on integer to get individual bit
+			int now = (num[rowDiff] & (1<<(12-(curCol-startCol))));	//shift on integer to get individual bit
 			if(now){
 				framebuffer[fb_row + curCol] = 0x00FF00;
 				framebuffer[fb_row + (++curCol)] = 0x00FF00;
