@@ -101,3 +101,39 @@ void drawBunkerPart(int bunker, int bunkerPart){
 		}
 	}
 }
+
+int detectBunkerHit(int x1, int x2, int y) {
+	int bunker, curCol;
+	for(bunker = 0; bunker < 3; bunker++) {
+		switch(bunker) {
+			case(0):
+				curCol = 90;
+				break;
+			case(1):
+				curCol = 229;
+				break;
+			case(2):
+				 curCol = 367;
+				break;
+			default:
+				curCol = 506;
+				break;
+		}
+		int bunkerPart;
+		for(bunkerPart = 0; bunkerPart < 16; bunkerPart++) {
+			if(bunkerPart == 13 || bunkerPart == 14) {
+				continue;
+			}
+			else if(bunkerState[bunker][bunkerPart] < 5) {
+				int startCol = curCol + (bunkerPart%4)*12;	//shift to specific piece of bunker
+				int startRow = 380 + (bunkerPart/4)*12;	//shift to specific piece of bunker
+				int stopRow = startRow + 12;
+				int stopCol = startCol + 12;
+
+
+			}
+		}
+	}
+}
+
+
