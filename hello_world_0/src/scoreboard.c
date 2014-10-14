@@ -149,6 +149,8 @@ void paintScore(int score, int digitCount){//, int firstTime){
 	if(score > 9){
 		paintDigit(digitCount, score % 10);
 		paintScore(score/10, ++digitCount);
+	} else {
+		paintDigit(digitCount, score);
 	}
 }
 
@@ -158,33 +160,43 @@ void paintDigit(int position, int value){
 	case(0):
 		drawDigit(zero, position);
 		xil_printf("zero");
+		break;
 	case(1):
 		drawDigit(one, position);
 		xil_printf("one");
+		break;
 	case(2):
 		drawDigit(two, position);
 		xil_printf("two");
+		break;
 	case(3):
 		drawDigit(three, position);
 		xil_printf("three");
+		break;
 	case(4):
 		drawDigit(four, position);
 		xil_printf("four");
+		break;
 	case(5):
 		drawDigit(five, position);
 		xil_printf("five");
+		break;
 	case(6):
 		drawDigit(six, position);
 		xil_printf("six");
+		break;
 	case(7):
 		drawDigit(seven, position);
 		xil_printf("seven");
+		break;
 	case(8):
 		drawDigit(eight, position);
 		xil_printf("eight");
+		break;
 	default:
 		drawDigit(nine, position);
 		xil_printf("nine");
+		break;
 	}
 }
 
@@ -215,7 +227,7 @@ void initializeScore(){
 	drawScore();
 	drawLives();
 	drawTankLives(3);
-	paintScore(0, 1);
+	paintScore(1, 1);
 }
 
 

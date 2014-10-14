@@ -33,7 +33,7 @@ int centerButtonPressed() {
 int lastTankShotAt = 0;
 
 void handleButtons(int counter) {
-	if(centerButtonPressed() && counter - lastTankShotAt > 100000000) {
+	if(centerButtonPressed()) {
 		lastTankShotAt = counter;
 		fireTankMissile();
 	}
@@ -54,7 +54,7 @@ void makeChange(int counter) {
 		int c;
 		for(c = 0; c < 4; c++) {
 			if(missileType[c] != -1) {
-				int hit = detectBunkerHit(missileX[c], missileX[c] + 5, missileY[c]-10, missileY[c]);
+				int hit = detectBunkerHit(missileX[c], missileX[c] + 5, missileY[c], missileY[c]+10);
 				if(hit) {
 					eraseAlienMissile(c);
 				}
