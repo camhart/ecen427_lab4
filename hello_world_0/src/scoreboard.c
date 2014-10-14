@@ -22,7 +22,7 @@
 int score_part1[TEXT_HEIGHT] = {66863043, 66863043, 201375756, 201375756, 66109452, 66109452, 835596, 835596, 267403203, 267403203};
 int score_part2[TEXT_HEIGHT] = {1010811903, 1010811903, 53490432, 53490432, 54510588, 54510588, 53490432, 53490432, 1009791999, 1009791999};
 int lives_part1[TEXT_HEIGHT] = {1611030631, 1611030631, 1611030630, 1611030630, 1611030631, 1611030631, 1611012486, 1611012486, 2145781255, 2145781255};
-int tank[12] = {12288,12288,64512,64512,16777212,16777212,67108863,67108863,67108863,67108863,67108863,67108863};
+int tankLife[12] = {12288,12288,64512,64512,16777212,16777212,67108863,67108863,67108863,67108863,67108863,67108863};
 int lives_part2[TEXT_HEIGHT] = {520447, 520447, 768, 768, 508156, 508156, 3, 3, 521212, 521212};
 int one[TEXT_HEIGHT] = {15, 15, 3, 3, 3, 3, 3, 3, 3, 3};
 int two[TEXT_HEIGHT] = {1020, 1020, 3, 3, 255, 255, 768, 768, 1023, 1023};
@@ -65,10 +65,10 @@ inline int getLives2Pixel(int row, int col){
 }
 
 
-int getTankPixel(int row, int col) {
+int getTankLifePixel(int row, int col) {
 	if(col < 0 || col > 32)
 		return 0;	//erase before/after tank	}
-	else if ((tank[row] & (1<<(31-col))))	//shift on integer to get individual bit
+	else if ((tankLife[row] & (1<<(31-col))))	//shift on integer to get individual bit
 		return 0x00FF00;	//draw tank body
 	else return 0;
 }
@@ -116,7 +116,7 @@ void drawLives(){
 	}
 }
 
-void drawTank(int pos){
+void drawTankLife(int pos){
 	int fb_row;
 	int rowDiff;
 	int curRow;
@@ -128,7 +128,7 @@ void drawTank(int pos){
 		rowDiff = curRow - TOP_ROW;
 		//iterate through the row/column and get individual pixel values
 		for(curCol = startCol; curCol <= stopCol; curCol++){
-			framebuffer[fb_row+curCol] = getTankPixel(rowDiff, curCol - startCol);
+			framebuffer[fb_row+curCol] = getTankLifePixel(rowDiff, curCol - startCol);
 		}
 	}
 }
@@ -136,7 +136,7 @@ void drawTank(int pos){
 void drawTankLives(int lives){
 	int i;
 	for(i=lives; i > 0; i--){
-		drawTank(i);
+		drawTankLife(i);
 	}
 }
 
@@ -149,7 +149,7 @@ void paintScore(int score){
 		digitCount++;
 		paintDigit(digitCount, score);
 		if(digitCount > 9){
-			paintScore(9, 999999999);
+			paintScore(999999999);
 		}
 	}
 }
