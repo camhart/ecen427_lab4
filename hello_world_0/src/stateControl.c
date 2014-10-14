@@ -48,6 +48,12 @@ void makeChange(int counter) {
 	}
 	if(counter % BULLET_UPDATE == 0) {
 		updateAlienMissiles(1);
+		int c;
+		for(c = 0; c < 4; c++) {
+			if(missileType[c] != -1) {
+				detectBunkerHit(missileX, missileX + 5, missileY);
+			}
+		}
 
 		if(tankMissile) {
 			updateTankMissile(1);
