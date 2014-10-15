@@ -148,14 +148,14 @@ void drawTankLives(int lives){
 void paintScore(int score, int digitCount){//, int firstTime){
 	if(score > 9){
 		paintDigit(digitCount, score % 10);
-		paintScore(score/10, ++digitCount);
+		xil_printf("score = %d, digit = %d",score%10, digitCount);
+		paintScore(score/10, digitCount + 1);
 	} else {
 		paintDigit(digitCount, score);
 	}
 }
 
 void paintDigit(int position, int value){
-	xil_printf("%d",value);
 	switch(value){
 	case(0):
 		drawDigit(zero, position);
@@ -192,12 +192,12 @@ void paintDigit(int position, int value){
 
 void drawDigit(int num[TEXT_HEIGHT], int pos){
 	int curRow,curCol;
-	int stopCol = pos*NUMBER_WIDTH + NUMBER_START_POS_X + 2;
 	int startCol = (pos-1)*NUMBER_WIDTH + NUMBER_START_POS_X;
+	int stopCol = startCol + 12;
 	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
 		int fb_row = curRow*640;	//get position in framebuffer
 		int rowDiff = curRow - TOP_ROW;
-		for(curCol = startCol; curCol < stopCol; curCol++) {
+		for(curCol = startCol; curCol <= stopCol; curCol++) {
 			//get the specific pixel value for the score block and assign framebuffer
 			int now = (num[rowDiff] & (1<<(12-(curCol-startCol))));	//shift on integer to get individual bit
 			if(now){
@@ -217,7 +217,7 @@ void initializeScore(){
 	drawScore();
 	drawLives();
 	drawTankLives(3);
-	paintScore(123456, 1);
+	paintScore(12957, 1);
 }
 
 

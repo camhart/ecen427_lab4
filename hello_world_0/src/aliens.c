@@ -372,12 +372,11 @@ void eraseAlienMissile(int c) {
 	//12 pixels wide
 	//10 pixels tall
 	int x, y, a;
-	for(x = 0; x < 12; x++) {
-		for(y = 0; y < 10; y++) {
-			a = (missileY[c] + y - 10) * 12 + missileX[c] + x;
-			if(framebuffer[a] == 0xFFFFFF) {
-				framebuffer[a] = 0x0;
-			}
+	for(y = 0; y >= -10; y--) {
+		for(x = 0; x < 12; x++) {
+
+//			if(framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] == 0xFFFFFF)
+				framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] = 0x0000FF;
 		}
 	}
 }
