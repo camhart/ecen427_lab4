@@ -36,6 +36,7 @@ int nine[TEXT_HEIGHT] = {252, 252, 771, 771, 255, 255, 3, 3, 252, 252};
 int zero[TEXT_HEIGHT] = {252, 252, 771, 771, 771, 771, 771, 771, 252, 252};
 static int isNotFirstDigit = 0;
 static int whichDigit = 0;
+int score;
 
 //returns the color that belongs in the given location
 inline int getScore1Pixel(int row, int col){
@@ -158,34 +159,34 @@ void paintScore(int score, int digitCount){//, int firstTime){
 void paintDigit(int position, int value){
 	switch(value){
 	case(0):
-		drawDigit(zero, position);
+		drawDigit(zero, scoreLength - position);
 		break;
 	case(1):
-		drawDigit(one, position);
+		drawDigit(one, scoreLength - position);
 		break;
 	case(2):
-		drawDigit(two, position);
+		drawDigit(two, scoreLength - position);
 		break;
 	case(3):
-		drawDigit(three, position);
+		drawDigit(three, scoreLength - position);
 		break;
 	case(4):
-		drawDigit(four, position);
+		drawDigit(four, scoreLength - position);
 		break;
 	case(5):
-		drawDigit(five, position);
+		drawDigit(five, scoreLength - position);
 		break;
 	case(6):
-		drawDigit(six, position);
+		drawDigit(six, scoreLength - position);
 		break;
 	case(7):
-		drawDigit(seven, position);
+		drawDigit(seven, scoreLength - position);
 		break;
 	case(8):
-		drawDigit(eight, position);
+		drawDigit(eight, scoreLength - position);
 		break;
 	default:
-		drawDigit(nine, position);
+		drawDigit(nine, scoreLength - position);
 		break;
 	}
 }
@@ -212,12 +213,37 @@ void drawDigit(int num[TEXT_HEIGHT], int pos){
 	}
 }
 
+updateScore(int s){
+	score = s;
+	if(s < 10)
+		scoreLength = 1;
+	else if(s < 100)
+		scoreLength = 2;
+	else if(s < 1000)
+		scoreLength = 3;
+	else if(s < 10000)
+		scoreLength = 4;
+	else if(s < 100000)
+		scoreLength = 5;
+	else if(s < 1000000)
+		scoreLength = 6;
+	else if(s < 10000000)
+		scoreLength = 7;
+	else if(s < 100000000)
+		scoreLength = 8;
+	else if(s < 1000000000)
+		scoreLength = 9;
+	else
+		scoreLength = 10;
+	paintScore(score, 1);
+}
+
 
 void initializeScore(){
 	drawScore();
 	drawLives();
 	drawTankLives(3);
-	paintScore(12957, 1);
+	updateScore(0);
 }
 
 
