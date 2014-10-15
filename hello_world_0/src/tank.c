@@ -68,7 +68,7 @@ void drawTankExplosionA(){
 	int curCol;
 	for(curRow = 444; curRow < 460; curRow++){
 		fb_row = curRow*640;
-		rowDiff = curRow - 448;
+		rowDiff = curRow - 444;
 		//iterate through the row/column and get individual pixel values
 		for(curCol = tankPosX-2; curCol < tankPosX + 34; curCol++){
 			framebuffer[fb_row+curCol] = getTankExplosionPixelA(rowDiff, curCol - tankPosX);
@@ -91,7 +91,7 @@ void drawTankExplosionB(){
 	int curCol;
 	for(curRow = 444; curRow < 460; curRow++){
 		fb_row = curRow*640;
-		rowDiff = curRow - 448;
+		rowDiff = curRow - 444;
 		//iterate through the row/column and get individual pixel values
 		for(curCol = tankPosX-2; curCol < tankPosX + 34; curCol++){
 			framebuffer[fb_row+curCol] = getTankExplosionPixelB(rowDiff, curCol - tankPosX);
