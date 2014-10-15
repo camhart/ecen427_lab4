@@ -8,6 +8,7 @@ int tankExplosionA[16] = {0, 0, 805503024, 805503024, 12582912, 12582912, 201523
 int tankExplosionB[16] = {3145728, 3145728, 0, 0, 50381568, 50381568, 3345600, 3345600, 50331696, 50331696, 847872, 847872, 822083328, 822083328, 67108800, 67108800, 1073741808, 1073741808};
 
 int tankPosX = 152;	//tank location
+int tankPosY = 448;
 
 int tankMissile = 0;	//is there a tank missile?
 int tankMissileX = -1;	//location
@@ -129,12 +130,16 @@ void drawTank(){
 	int rowDiff;
 	int curRow;
 	int curCol;
-	for(curRow = 448; curRow < 460; curRow++){
+	for(curRow = tankPosY; curRow < 460; curRow++){
 		fb_row = curRow*640;
-		rowDiff = curRow - 448;
+		rowDiff = curRow - tankPosY;
 		//iterate through the row/column and get individual pixel values
 		for(curCol = tankPosX-2; curCol < tankPosX + 34; curCol++){
 			framebuffer[fb_row+curCol] = getTankPixel(rowDiff, curCol - tankPosX);
 		}
 	}
 }
+
+//int detectTankHit(int x1, int x2, int y1, int y2) {
+//	if(y1)
+//}
