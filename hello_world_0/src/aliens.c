@@ -4,6 +4,7 @@
 #include "stateControl.h"
 #include "globals.h"
 #include "aliens.h"
+#include "scoreboard.h"
 
 //an array to keep track of alive/dead aliens
 char alive[55] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -382,7 +383,8 @@ void eraseAlienMissile(int c) {
 		for(x = 0; x < 12; x++) {
 
 //			if(framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] == 0xFFFFFF)
-				framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] = 0x0000FF;
+			if(framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] != 0x00FF00)
+				framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] = 0x0;
 		}
 	}
 }

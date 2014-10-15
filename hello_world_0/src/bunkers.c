@@ -124,7 +124,7 @@ int detectBunkerHit(int x1, int x2, int y1, int y2) {
 			if(bunkerPart == 13 || bunkerPart == 14) {
 				continue;
 			}
-			else if(bunkerState[bunker][bunkerPart] < 5) {
+			else if(bunkerState[bunker][bunkerPart] < 4) {
 				int startCol = curCol + (bunkerPart%4)*12;	//shift to specific piece of bunker
 				int startRow = 380 + (bunkerPart/4)*12;	//shift to specific piece of bunker
 				int stopRow = startRow + 12;
