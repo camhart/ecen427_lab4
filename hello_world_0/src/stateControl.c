@@ -60,7 +60,6 @@ void makeChange(int counter) {
 				}
 			}
 		}
-
 		if(tankMissile) {
 			updateTankMissile(1);
 			int alien = detectAlienHit(tankMissileX, tankMissileX+2, tankMissileY);
@@ -73,7 +72,6 @@ void makeChange(int counter) {
 			}
 			int hit = detectBunkerHit(tankMissileX, tankMissileX+2, tankMissileY - 10, tankMissileY);
 			if(hit) {
-//				eraseAlienMissile(c);
 				eraseTankMissile();
 				tankMissile = 0;
 				tankMissileY = 438;

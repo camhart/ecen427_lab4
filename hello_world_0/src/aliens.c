@@ -358,7 +358,7 @@ int detectAlienHit(int x1, int x2, int y) {
 //						xil_printf("%d, ", hitAlienY * 11 + hitAlienX);
 						alive[hitAlienY * 11 + hitAlienX] = 0;
 						drawExplosion(hitAlienX, hitAlienY);
-//						drawTankExplosionA();
+						drawTankExplosionA();
 						if(hitAlienY < 1)
 							updateScore(score+30);
 						else if(hitAlienY < 4)
