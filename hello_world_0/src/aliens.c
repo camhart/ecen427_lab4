@@ -4,6 +4,7 @@
 #include "stateControl.h"
 #include "globals.h"
 #include "aliens.h"
+#include "scoreboard.h"
 
 //an array to keep track of alive/dead aliens
 char alive[55] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -184,7 +185,8 @@ void drawAlienMissile(int mIndex, int state) {
 			if(cy < y) {
 				framebuffer[cy * 640 + cx] = 0;	//erase
 			} else {
-				framebuffer[cy * 640 + cx] = getMissilePixel(missiles[missileType[mIndex]][state], cx - x, cy - y);	//draw
+				if(framebuffer[cy * 640 + cx] != 0x00FF00)
+					framebuffer[cy * 640 + cx] = getMissilePixel(missiles[missileType[mIndex]][state], cx - x, cy - y);	//draw
 			}
 		}
 	}
@@ -308,6 +310,7 @@ void drawExplosion(int x, int y){
 	int cornerY = alienPosY + y*24;
 	int stopX = cornerX + 24;
 	int stopY = cornerY + 18;
+
 	int curRow, curCol, fb_row, rowDiff;
 	for(curRow = cornerY; curRow <= stopY; curRow++){
 		fb_row = curRow*640;
@@ -376,12 +379,12 @@ void eraseAlienMissile(int c) {
 	//12 pixels wide
 	//10 pixels tall
 	int x, y, a;
-	for(x = 0; x < 12; x++) {
-		for(y = 0; y < 10; y++) {
-			a = (missileY[c] + y) * 12 + missileX[c] + x;
-			if(framebuffer[a] == 0xFFFFFF) {
-				framebuffer[a] = 0x0;
-			}
+	for(y = 0; y >= -10; y--) {
+		for(x = 0; x < 12; x++) {
+
+//			if(framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] == 0xFFFFFF)
+			if(framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] != 0x00FF00)
+				framebuffer[((missileY[c] + y) * 640) + missileX[c] + x] = 0x0;
 		}
 	}
 }

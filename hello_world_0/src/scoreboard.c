@@ -37,6 +37,7 @@ int zero[TEXT_HEIGHT] = {252, 252, 771, 771, 771, 771, 771, 771, 252, 252};
 static int isNotFirstDigit = 0;
 static int whichDigit = 0;
 int score;
+int scoreLength;
 
 //returns the color that belongs in the given location
 inline int getScore1Pixel(int row, int col){
