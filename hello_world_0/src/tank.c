@@ -4,6 +4,8 @@
 #include "globals.h"
 
 int tank[12] = {12288,12288,64512,64512,16777212,16777212,67108863,67108863,67108863,67108863,67108863,67108863};
+int tankExplosionA[16] = {0, 0, 805503024, 805503024, 12582912, 12582912, 201523248, 201523248, 787203, 787203, 809250816, 809250816, 16776240, 16776240, 67108608, 67108608, 1073741808, 1073741808};
+int tankExplosionA[16] = {3145728, 3145728, 0, 0, 50381568, 50381568, 3345600, 3345600, 50331696, 50331696, 847872, 847872, 822083328, 822083328, 67108800, 67108800, 1073741808, 1073741808};
 
 int tankPosX = 152;	//tank location
 
@@ -57,6 +59,52 @@ void drawTankMissile(){
 			}
 		}
 	}
+}
+
+void tankExplosionA(){
+	int fb_row;
+	int rowDiff;
+	int curRow;
+	int curCol;
+	for(curRow = 444; curRow < 460; curRow++){
+		fb_row = curRow*640;
+		rowDiff = curRow - 448;
+		//iterate through the row/column and get individual pixel values
+		for(curCol = tankPosX-2; curCol < tankPosX + 34; curCol++){
+			framebuffer[fb_row+curCol] = getTankExplosionPixelA(rowDiff, curCol - tankPosX);
+		}
+	}
+}
+
+int getTankExplosionPixelA(int row, int col) {
+	if(col < 0 || col > 29)
+		return 0;	//erase before/after tank	}
+	else if ((tank[row] & (1<<(29-col))))	//shift on integer to get individual bit
+		return 0x00FF00;	//draw tank body
+	else return 0;
+}
+
+void tankExplosionB(){
+	int fb_row;
+	int rowDiff;
+	int curRow;
+	int curCol;
+	for(curRow = 444; curRow < 460; curRow++){
+		fb_row = curRow*640;
+		rowDiff = curRow - 448;
+		//iterate through the row/column and get individual pixel values
+		for(curCol = tankPosX-2; curCol < tankPosX + 34; curCol++){
+			framebuffer[fb_row+curCol] = getTankExplosionPixelB(rowDiff, curCol - tankPosX);
+		}
+	}
+}
+
+int getTankExplosionPixelB(int row, int col) {
+	if(col < 0 || col > 29)
+		return 0;	//erase before/after tank	}
+	else if ((tank[row] & (1<<(29-col))))	//shift on integer to get individual bit
+		return 0x00FF00;	//draw tank body
+	else return 0;
 }
 
 //void eraseTankMissile2() {
