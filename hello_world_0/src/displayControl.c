@@ -21,20 +21,32 @@ int alienBlockMoved = 1;	//track movement
 
 void render() {
 	//draw everything!
-	state = !state;
+	//state = !state;
+	drawAlienMissiles();
+	drawTankMissile();
+	int drawn = 0;
 	if(alienBlockMoved) {
+		drawn = 1;
 		alienState = !alienState;
 		drawAlienBlock(alienPosY, alienPosX);
 		alienBlockMoved = 0;
 	}
-	drawTankMissile();
-	drawAlienMissiles();
-	drawAlienMissiles();
+	if(hitAlien) {
+		if(!drawn)
+			drawAlienBlock(alienPosY, alienPosX);
+		drawExplosion(hitAlienX, hitAlienY);
+		hitAlien = 0;
+	}
+
+//	else {
+//		drawAlienBlock(alienPosY, alienPosX);
+//	}
 	drawBoss();
 //	initializeBunkers();
 
-	//
-	drawTank();
+	if(tankAlive) {
+		drawTank();
+	}
 
 }
 

@@ -1,4 +1,11 @@
 #include <stdio.h>
+//#include "xtmrctr_l.h"
+#include "xtmrctr.h"
+#include "xtmrctr_l.h"
+#include "xil_types.h"
+#include "xparameters.h"
+//#include "xtmrctr_l.h"		//needed for the timer
+#include "xil_macroback.h"	//needed for the timer
 #include "xgpio.h"          // Provides access to PB GPIO driver.
 #include "mb_interface.h"   // provides the microblaze interrupt enables, etc.
 #include "xintc_l.h"        // Provides handy macros for the interrupt controller.
@@ -6,7 +13,6 @@
 #include "xparameters.h"
 #include "xaxivdma.h"
 #include "xio.h"
-#include "time.h"
 #include "unistd.h"
 #include "displayControl.h"
 #include "stateControl.h"
@@ -23,9 +29,51 @@ XGpio gpPB;   // This is a handle for the push-button GPIO block.
 // This is invoked in response to a timer interrupt.
 // It does 2 things: 1) debounce switches, and 2) advances the time.
 int counter = 0;
+
+XTmrCtr xps_timer_0;
+Xuint32 startTime, endTime, calibrationTime, runTime;
+XStatus status;
+
+unsigned long long longest = 0;
+unsigned long long shortest = 0xFFFFFFFF;
+unsigned long long average = 0;
+unsigned int acount = 0;
+unsigned long long sum = 0;
+unsigned int ccount = 0;
+
 void timer_interrupt_handler() {
+    status = XTmrCtr_Initialize(&xps_timer_0, XPAR_AXI_TIMER_0_DEVICE_ID);
+    if (status != XST_SUCCESS)
+    {
+		xil_printf("Issue setting up timer");
+		return;
+    }
+	startTime = XTmrCtr_GetValue(&xps_timer_0, XPAR_AXI_TIMER_0_DEVICE_ID);
+	XTmrCtr_Start(&xps_timer_0, 0);
+
 	counter++;
 	makeChange(counter);
+	//XTC_DEVICE_TIMER_COUNT
+	XTmrCtr_Stop(&xps_timer_0, 0);
+	endTime = XTmrCtr_GetValue(&xps_timer_0, XPAR_AXI_TIMER_0_DEVICE_ID);
+	runTime = endTime - startTime - calibrationTime;
+	ccount++;
+	sum += runTime;
+	if(ccount % 1000 == 0) {
+//		acount++;
+//		average = average * (acount - 1 / acount) + (sum / ccount) * (1 / acount);
+		xil_printf("average %x\r\n", sum / ccount);
+//		sum = 0;
+//		ccount = 0;
+	}
+	if(runTime > longest) {
+		longest = runTime;
+		xil_printf("longest %x\r\n", runTime);
+	}
+	else if(runTime < shortest) {
+		shortest = runTime;
+		xil_printf("shortest %x\r\n", runTime);
+	}
 }
 
 int currentButtonState;
@@ -170,12 +218,33 @@ int main()
      lab4init(framePointer0);
 
      render();
+//     XTmrCtr_Enable( , XPAR_AXI_TIMER_0_DEVICE_ID);
+//     XTmrCtr_Enable(XPAR_AXI_TIMER_0_BASEADDR, XPAR_AXI_TIMER_0_DEVICE_ID);
+
+
+     status = XTmrCtr_Initialize(&xps_timer_0, XPAR_AXI_TIMER_0_DEVICE_ID);
+     if (Status != XST_SUCCESS)
+     {
+    	 xil_printf("Issue setting up timer");
+    	 return 0;
+     }
+//
+//// 	startTime = XTmrCtr_GetValue(&xps_timer_0, XPAR_AXI_TIMER_0_DEVICE_ID);
+//// 	XTmrCtr_Start(&xps_timer_0, 0);
+//// 	XTmrCtr_Stop(&xps_timer_0, 0);
+//// 	endTime = XTmrCtr_GetValue(&xps_timer_0, XPAR_AXI_TIMER_0_DEVICE_ID);
+//// 	calibrationTime = endTime - startTime;
+
+  	startTime = XTmrCtr_GetValue(&xps_timer_0, XPAR_AXI_TIMER_0_DEVICE_ID);
+  	XTmrCtr_Start(&xps_timer_0, 0);
+  	XTmrCtr_Stop(&xps_timer_0, 0);
+  	endTime = XTmrCtr_GetValue(&xps_timer_0, XPAR_AXI_TIMER_0_DEVICE_ID);
+  	calibrationTime = endTime - startTime;
+
      microblaze_enable_interrupts();
 
      while (1);
-//     {
-//    	 lab3run(framePointer0);
-//     }
+
      cleanup_platform();
 
     return 0;

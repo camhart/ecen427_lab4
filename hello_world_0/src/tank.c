@@ -2,17 +2,20 @@
 
 #include "displayControl.h"
 #include "globals.h"
+#include "stateControl.h"
 
 int tank[12] = {12288,12288,64512,64512,16777212,16777212,67108863,67108863,67108863,67108863,67108863,67108863};
 int tankExplosionA[16] = {0, 0, 805503024, 805503024, 12582912, 12582912, 201523248, 201523248, 787203, 787203, 809250816, 809250816, 16776240, 16776240, 67108608, 67108608, 1073741808, 1073741808};
 int tankExplosionB[16] = {3145728, 3145728, 0, 0, 50381568, 50381568, 3345600, 3345600, 50331696, 50331696, 847872, 847872, 822083328, 822083328, 67108800, 67108800, 1073741808, 1073741808};
 
-int tankPosX = 152;	//tank location
+int tankPosX = TANK_START_X;	//tank location
 int tankPosY = 448;
 
 int tankMissile = 0;	//is there a tank missile?
 int tankMissileX = -1;	//location
 int tankMissileY = 438;	//location
+
+int tankAlive = 1;
 
 
 void fireTankMissile(){
@@ -39,7 +42,7 @@ void updateTankMissile(int changePosition){
 	if(changePosition && tankMissile) {
 		tankMissileY -= 8;
 	}
-	if(tankMissileY < 30){	//if we've hit the end of the screen, remove missile entirely
+	if(tankMissileY < 32){	//if we've hit the end of the screen, remove missile entirely
 		eraseTankMissile();
 		tankMissile = 0;
 		tankMissileY = 438;
@@ -80,7 +83,7 @@ void drawTankExplosionA(){
 int getTankExplosionPixelA(int row, int col) {
 	if(col < 0 || col > 29)
 		return 0;	//erase before/after tank	}
-	else if ((tank[row] & (1<<(29-col))))	//shift on integer to get individual bit
+	else if ((tankExplosionA[row] & (1<<(29-col))))	//shift on integer to get individual bit
 		return 0x00FF00;	//draw tank body
 	else return 0;
 }
@@ -100,10 +103,25 @@ void drawTankExplosionB(){
 	}
 }
 
+void eraseTankExplosion(){
+	int fb_row;
+	int rowDiff;
+	int curRow;
+	int curCol;
+	for(curRow = 444; curRow < 460; curRow++){
+		fb_row = curRow*640;
+		rowDiff = curRow - 444;
+		//iterate through the row/column and get individual pixel values
+		for(curCol = tankPosX-2; curCol < tankPosX + 34; curCol++){
+			framebuffer[fb_row+curCol] = 0;
+		}
+	}
+}
+
 int getTankExplosionPixelB(int row, int col) {
 	if(col < 0 || col > 29)
 		return 0;	//erase before/after tank	}
-	else if ((tank[row] & (1<<(29-col))))	//shift on integer to get individual bit
+	else if ((tankExplosionB[row] & (1<<(29-col))))	//shift on integer to get individual bit
 		return 0x00FF00;	//draw tank body
 	else return 0;
 }
@@ -140,6 +158,18 @@ void drawTank(){
 	}
 }
 
-//int detectTankHit(int x1, int x2, int y1, int y2) {
-//	if(y1)
-//}
+int detectTankHit(int x1, int x2, int y1, int y2) {
+	int tankWidth = 32;
+	int tankHeight = 12;
+	int startTankX = tankPosX;
+	int endTankX = tankPosX + tankWidth;
+	int startTankY = tankPosY;
+	int endTankY = tankPosY + tankHeight;
+//	if(x1 <= stopCol && x2 >= startCol && y1 <= stopRow && y2 >= startRow) {
+	if(x1 <= endTankX && x2 >= startTankX && y1 <= endTankY && y2 >= startTankY) {
+		tankLives--;
+		drawTankLives(tankLives);
+		return 1;
+	}
+	return 0;
+}

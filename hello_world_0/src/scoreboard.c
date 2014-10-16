@@ -3,20 +3,7 @@
 #include "displayControl.h"
 #include "globals.h"
 #include "scoreboard.h"
-
-#define SCORE_START_POSITION_X1 24
-#define SCORE_STOP_POSITION_X1 52
-#define SCORE_START_POSITION_X2 53
-#define SCORE_STOP_POSITION_X2 81
-#define LIVES_START_POSITION_X1 400
-#define LIVES_STOP_POSITION_X1 430
-#define LIVES_START_POSITION_X2 431
-#define LIVES_STOP_POSITION_X2 450
-#define NUMBER_START_POS_X 96
-#define NUMBER_WIDTH 12
-#define TOP_ROW 6
-#define BOTTOM_ROW 15
-#define TEXT_HEIGHT 10
+#include "stateControl.h"
 
 //int bitmap of score, level, and numbers
 int score_part1[TEXT_HEIGHT] = {66863043, 66863043, 201375756, 201375756, 66109452, 66109452, 835596, 835596, 267403203, 267403203};
@@ -34,9 +21,7 @@ int seven[TEXT_HEIGHT] = {1023, 1023, 3, 3, 3, 3, 12, 12, 12, 12};
 int eight[TEXT_HEIGHT] = {252, 252, 771, 771, 252, 252, 771, 771, 252, 252};
 int nine[TEXT_HEIGHT] = {252, 252, 771, 771, 255, 255, 3, 3, 252, 252};
 int zero[TEXT_HEIGHT] = {252, 252, 771, 771, 771, 771, 771, 771, 252, 252};
-static int isNotFirstDigit = 0;
-static int whichDigit = 0;
-int score;
+int score = 0;
 int scoreLength;
 
 //returns the color that belongs in the given location
@@ -98,6 +83,7 @@ void drawScore(){
 		}
 	}
 }
+
 void drawLives(){
 	int curRow, curCol;
 	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
@@ -137,23 +123,65 @@ void drawTankLife(int pos){
 	}
 }
 
+void eraseTankLives(){
+	int fb_row;
+	int rowDiff;
+	int curRow;
+	int curCol;
+	int startCol = 456;
+	int stopCol = startCol+160;
+	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW+2; curRow++){
+		fb_row = curRow*640;
+		rowDiff = curRow - TOP_ROW;
+		//iterate through the row/column and get individual pixel values
+		for(curCol = startCol; curCol <= stopCol; curCol++){
+			framebuffer[fb_row+curCol] = 0;
+		}
+	}
+}
+
 void drawTankLives(int lives){
+	eraseTankLives();
 	int i;
 	for(i=lives; i > 0; i--){
 		drawTankLife(i);
 	}
+	if(lives == 0){
+		gameOver = 1;
+	}
 }
 
+void paintScreenRed(){
+	int curRow, curCol;
+	for(curRow = 25; curRow <= 450; curRow++) {	//step through row
+		int fb_row = curRow*640;	//get position in framebuffer
+		int rowDiff = curRow - 25;
+		for(curCol = 10; curCol <= 625; curCol++) {
+			framebuffer[fb_row + curCol] = 0xFF0000;
+			framebuffer[fb_row + (++curCol)] = 0xFF0000;
+		}
+	}
+}
 
-
-
-void paintScore(int score, int digitCount){//, int firstTime){
-	if(score > 9){
-		paintDigit(digitCount, score % 10);
-		xil_printf("score = %d, digit = %d",score%10, digitCount);
-		paintScore(score/10, digitCount + 1);
-	} else {
-		paintDigit(digitCount, score);
+void drawDigit(int num[TEXT_HEIGHT], int pos){
+	int curRow,curCol;
+	int startCol = (pos-1)*NUMBER_WIDTH + NUMBER_START_POS_X;
+	int stopCol = startCol + 12;
+	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
+		int fb_row = curRow*640;	//get position in framebuffer
+		int rowDiff = curRow - TOP_ROW;
+		for(curCol = startCol; curCol <= stopCol; curCol++) {
+			//get the specific pixel value for the score block and assign framebuffer
+			int now = (num[rowDiff] & (1<<(12-(curCol-startCol))));	//shift on integer to get individual bit
+			if(now){
+				framebuffer[fb_row + curCol] = 0x00FF00;
+				framebuffer[fb_row + (++curCol)] = 0x00FF00;
+			}
+			else{
+				framebuffer[fb_row + curCol] = now;
+				framebuffer[fb_row + (++curCol)] = now;
+			}
+		}
 	}
 }
 
@@ -192,47 +220,34 @@ void paintDigit(int position, int value){
 	}
 }
 
-void drawDigit(int num[TEXT_HEIGHT], int pos){
-	int curRow,curCol;
-	int startCol = (pos-1)*NUMBER_WIDTH + NUMBER_START_POS_X;
-	int stopCol = startCol + 12;
-	for(curRow = TOP_ROW; curRow <= BOTTOM_ROW; curRow++) {	//step through row
-		int fb_row = curRow*640;	//get position in framebuffer
-		int rowDiff = curRow - TOP_ROW;
-		for(curCol = startCol; curCol <= stopCol; curCol++) {
-			//get the specific pixel value for the score block and assign framebuffer
-			int now = (num[rowDiff] & (1<<(12-(curCol-startCol))));	//shift on integer to get individual bit
-			if(now){
-				framebuffer[fb_row + curCol] = 0x00FF00;
-				framebuffer[fb_row + (++curCol)] = 0x00FF00;
-			}
-			else{
-				framebuffer[fb_row + curCol] = now;
-				framebuffer[fb_row + (++curCol)] = now;
-			}
-		}
+void paintScore(int score, int digitCount){//, int firstTime){
+	if(score > 9){
+		paintDigit(digitCount, score % 10);
+		paintScore(score/10, digitCount + 1);
+	} else {
+		paintDigit(digitCount, score);
 	}
 }
 
-updateScore(int s){
-	score = s;
-	if(s < 10)
+void updateScore(int s){
+	score = score+ s;
+	if(score < 10)
 		scoreLength = 1;
-	else if(s < 100)
+	else if(score < 100)
 		scoreLength = 2;
-	else if(s < 1000)
+	else if(score < 1000)
 		scoreLength = 3;
-	else if(s < 10000)
+	else if(score < 10000)
 		scoreLength = 4;
-	else if(s < 100000)
+	else if(score < 100000)
 		scoreLength = 5;
-	else if(s < 1000000)
+	else if(score < 1000000)
 		scoreLength = 6;
-	else if(s < 10000000)
+	else if(score < 10000000)
 		scoreLength = 7;
-	else if(s < 100000000)
+	else if(score < 100000000)
 		scoreLength = 8;
-	else if(s < 1000000000)
+	else if(score < 1000000000)
 		scoreLength = 9;
 	else
 		scoreLength = 10;
